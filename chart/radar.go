@@ -385,9 +385,9 @@ func (rv *radarView) draw(dc *gui.DrawContext) {
 				}
 				// Close polygon.
 				pts = append(pts, pts[0], pts[1])
-				ctx.Polyline(pts, gridColor, 1)
+				ctx.Polyline(pts, gridColor, 1/ctx.Scale())
 			} else {
-				ctx.Circle(cx, cy, r, gridColor, 1)
+				ctx.Circle(cx, cy, r, gridColor, 1/ctx.Scale())
 			}
 		}
 	}
@@ -397,7 +397,7 @@ func (rv *radarView) draw(dc *gui.DrawContext) {
 		a := radarAxisAngle(cfg.StartAngle, i, nAxes)
 		ex := cx + radius*float32(math.Cos(float64(a)))
 		ey := cy + radius*float32(math.Sin(float64(a)))
-		ctx.Line(cx, cy, ex, ey, gridColor, 1)
+		ctx.Line(cx, cy, ex, ey, gridColor, 1/ctx.Scale())
 	}
 
 	// Draw axis labels.

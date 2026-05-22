@@ -347,15 +347,16 @@ func drawErrorBars(
 	left, right, top, bottom float32,
 	color gui.Color,
 ) {
+	w := 1 / ctx.Scale()
 	yLo, yHi := safeErr(p.YErr)
 	if yLo > 0 || yHi > 0 {
 		pyLo := yAxis.Transform(p.Y-yLo, bottom, top)
 		pyHi := yAxis.Transform(p.Y+yHi, bottom, top)
 		pyLo = clampF32(pyLo, top, bottom)
 		pyHi = clampF32(pyHi, top, bottom)
-		ctx.Line(px, pyLo, px, pyHi, color, 1)
-		ctx.Line(px-errorBarCapSize, pyLo, px+errorBarCapSize, pyLo, color, 1)
-		ctx.Line(px-errorBarCapSize, pyHi, px+errorBarCapSize, pyHi, color, 1)
+		ctx.Line(px, pyLo, px, pyHi, color, w)
+		ctx.Line(px-errorBarCapSize, pyLo, px+errorBarCapSize, pyLo, color, w)
+		ctx.Line(px-errorBarCapSize, pyHi, px+errorBarCapSize, pyHi, color, w)
 	}
 	xLo, xHi := safeErr(p.XErr)
 	if xLo > 0 || xHi > 0 {
@@ -363,9 +364,9 @@ func drawErrorBars(
 		pxHi := xAxis.Transform(p.X+xHi, left, right)
 		pxLo = clampF32(pxLo, left, right)
 		pxHi = clampF32(pxHi, left, right)
-		ctx.Line(pxLo, py, pxHi, py, color, 1)
-		ctx.Line(pxLo, py-errorBarCapSize, pxLo, py+errorBarCapSize, color, 1)
-		ctx.Line(pxHi, py-errorBarCapSize, pxHi, py+errorBarCapSize, color, 1)
+		ctx.Line(pxLo, py, pxHi, py, color, w)
+		ctx.Line(pxLo, py-errorBarCapSize, pxLo, py+errorBarCapSize, color, w)
+		ctx.Line(pxHi, py-errorBarCapSize, pxHi, py+errorBarCapSize, color, w)
 	}
 }
 

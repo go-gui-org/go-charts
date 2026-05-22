@@ -270,7 +270,7 @@ func (sv *sparklineView) draw(dc *gui.DrawContext) {
 			if rc == (gui.Color{}) {
 				rc = gui.RGBA(128, 128, 128, 128)
 			}
-			ctx.Line(left, ry, right, ry, rc, 1)
+			ctx.Line(left, ry, right, ry, rc, 1/ctx.Scale())
 		}
 	}
 

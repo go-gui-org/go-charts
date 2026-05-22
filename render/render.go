@@ -23,6 +23,10 @@ func (c *Context) Width() float32 { return c.DC.Width }
 // Height returns the available drawing height.
 func (c *Context) Height() float32 { return c.DC.Height }
 
+// Scale returns the device pixel ratio (e.g. 2.0 on Retina/HiDPI).
+// Use 1/Scale() to get a 1-physical-pixel line width.
+func (c *Context) Scale() float32 { return c.DC.Scale }
+
 // Line draws a line segment.
 func (c *Context) Line(x0, y0, x1, y1 float32, color gui.Color, width float32) {
 	c.DC.Line(x0, y0, x1, y1, color, width)

@@ -262,7 +262,7 @@ func (wv *waterfallView) draw(dc *gui.DrawContext) {
 					}
 					ctx.DashedLine(prevCx+barW/2, connY,
 						cx-barW/2, connY,
-						connColor, DefaultConnectorWidth, 4, 3)
+						connColor, 1/ctx.Scale(), 4, 3)
 				}
 			}
 		}
