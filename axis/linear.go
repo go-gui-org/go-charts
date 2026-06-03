@@ -3,7 +3,7 @@ package axis
 import (
 	"fmt"
 
-	"github.com/mike-ward/go-charts/scale"
+	"github.com/go-gui-org/go-charts/scale"
 )
 
 // Linear is a linear numeric axis with auto-tick generation.

@@ -3,10 +3,10 @@ package chart
 import (
 	"testing"
 
-	"github.com/mike-ward/go-charts/render"
-	"github.com/mike-ward/go-charts/series"
-	"github.com/mike-ward/go-charts/theme"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/render"
+	"github.com/go-gui-org/go-charts/series"
+	"github.com/go-gui-org/go-charts/theme"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 func testCtx(w, h float32) (*render.Context, *gui.DrawContext) {

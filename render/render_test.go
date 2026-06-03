@@ -3,8 +3,8 @@ package render
 import (
 	"testing"
 
-	"github.com/mike-ward/go-glyph"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-glyph"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // stubMeasurer satisfies gui.TextMeasurer with zero returns.

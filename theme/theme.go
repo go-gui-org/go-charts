@@ -2,7 +2,7 @@
 package theme
 
 import (
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // Default padding values for chart themes.

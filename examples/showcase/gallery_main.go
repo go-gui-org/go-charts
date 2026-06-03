@@ -14,8 +14,8 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/mike-ward/go-charts/chart"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/chart"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 func main() {

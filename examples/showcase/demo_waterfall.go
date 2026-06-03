@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/mike-ward/go-charts/chart"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/chart"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 func demoWaterfallBasic(w *gui.Window) gui.View {

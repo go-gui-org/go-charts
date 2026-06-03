@@ -49,7 +49,7 @@ chart.Line(LineCfg{...}) → gui.View
 
 ### Dependencies
 
-- `github.com/mike-ward/go-gui` — GUI framework (local replace `../go-gui`)
+- `github.com/go-gui-org/go-gui` — GUI framework (local replace `../go-gui`)
 - No other external dependencies
 
 ### Pattern Notes

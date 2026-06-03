@@ -3,11 +3,11 @@ package main
 import (
 	"math"
 
-	"github.com/mike-ward/go-charts/axis"
-	"github.com/mike-ward/go-charts/chart"
-	"github.com/mike-ward/go-charts/series"
-	"github.com/mike-ward/go-charts/theme"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/axis"
+	"github.com/go-gui-org/go-charts/chart"
+	"github.com/go-gui-org/go-charts/series"
+	"github.com/go-gui-org/go-charts/theme"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // styleSeries returns a reusable two-series dataset for style demos.

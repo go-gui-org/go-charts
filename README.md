@@ -1,16 +1,16 @@
 # Go-Charts
 
-[![CI](https://github.com/mike-ward/go-charts/actions/workflows/ci.yml/badge.svg)](https://github.com/mike-ward/go-charts/actions/workflows/ci.yml)
+[![CI](https://github.com/go-gui-org/go-charts/actions/workflows/ci.yml/badge.svg)](https://github.com/go-gui-org/go-charts/actions/workflows/ci.yml)
 [![Go 1.26+](https://img.shields.io/badge/Go-1.26+-00ADD8?logo=go)](https://go.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 
 Charting library for Go, built on
-[go-gui](https://github.com/mike-ward/go-gui). Immediate-mode rendering
+[go-gui](https://github.com/go-gui-org/go-gui). Immediate-mode rendering
 via `DrawCanvas` — no virtual DOM, no diffing, just fast composable charts.
 
 ![Showcase](screenshot.png)
 
-**[Browse the full chart gallery →](https://mike-ward.github.io/go-charts/)**
+**[Browse the full chart gallery →](https://go-gui-org.github.io/go-charts/)**
 
 ## Highlights
 
@@ -33,10 +33,10 @@ via `DrawCanvas` — no virtual DOM, no diffing, just fast composable charts.
 package main
 
 import (
-    "github.com/mike-ward/go-charts/chart"
-    "github.com/mike-ward/go-charts/series"
-    "github.com/mike-ward/go-gui/gui"
-    "github.com/mike-ward/go-gui/gui/backend"
+    "github.com/go-gui-org/go-charts/chart"
+    "github.com/go-gui-org/go-charts/series"
+    "github.com/go-gui-org/go-gui/gui"
+    "github.com/go-gui-org/go-gui/gui/backend"
 )
 
 func main() {
@@ -115,13 +115,13 @@ See [doc/ROADMAP.md](doc/ROADMAP.md) for planned features.
 ## Requirements
 
 - Go 1.26+
-- [go-gui](https://github.com/mike-ward/go-gui)
+- [go-gui](https://github.com/go-gui-org/go-gui)
 - SDL2 (for the interactive showcase; not required for headless export)
 
 ## Install
 
 ```bash
-go get github.com/mike-ward/go-charts
+go get github.com/go-gui-org/go-charts
 ```
 
 ## Build

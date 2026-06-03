@@ -1,7 +1,7 @@
 // Package series provides data series types for charts.
 package series
 
-import "github.com/mike-ward/go-gui/gui"
+import "github.com/go-gui-org/go-gui/gui"
 
 // Series is the interface for all data series.
 type Series interface {

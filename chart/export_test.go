@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mike-ward/go-charts/axis"
-	"github.com/mike-ward/go-charts/series"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/axis"
+	"github.com/go-gui-org/go-charts/series"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // nonChartView is a minimal gui.View that does not implement

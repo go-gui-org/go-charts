@@ -4,7 +4,7 @@ package axis
 import (
 	"fmt"
 
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // Axis defines the interface for chart axes.

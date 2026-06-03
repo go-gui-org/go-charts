@@ -5,7 +5,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/mike-ward/go-charts/internal/fmath"
+	"github.com/go-gui-org/go-charts/internal/fmath"
 )
 
 // Time is a time-based axis.

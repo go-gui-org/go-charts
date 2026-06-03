@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/mike-ward/go-charts/series"
+	"github.com/go-gui-org/go-charts/series"
 )
 
 func testComboSeries() []ComboSeries {

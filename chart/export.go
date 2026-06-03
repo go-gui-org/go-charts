@@ -7,9 +7,9 @@ import (
 	"math"
 	"os"
 
-	"github.com/mike-ward/go-charts/theme"
-	"github.com/mike-ward/go-glyph"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/theme"
+	"github.com/go-gui-org/go-glyph"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // themer is satisfied by chart views that expose their theme.

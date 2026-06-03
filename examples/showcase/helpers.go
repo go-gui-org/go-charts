@@ -8,10 +8,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/mike-ward/go-charts/chart"
-	"github.com/mike-ward/go-charts/theme"
-	"github.com/mike-ward/go-gui/gui"
-	"github.com/mike-ward/go-gui/gui/highlight"
+	"github.com/go-gui-org/go-charts/chart"
+	"github.com/go-gui-org/go-charts/theme"
+	"github.com/go-gui-org/go-gui/gui"
+	"github.com/go-gui-org/go-gui/gui/highlight"
 )
 
 // markdownStyleWithHighlighter returns the default markdown style with

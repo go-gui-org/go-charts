@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/mike-ward/go-charts/internal/fmath"
-	"github.com/mike-ward/go-charts/series"
+	"github.com/go-gui-org/go-charts/internal/fmath"
+	"github.com/go-gui-org/go-charts/series"
 )
 
 // SMA returns a simple moving average of s over a sliding window of

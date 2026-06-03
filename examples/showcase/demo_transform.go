@@ -3,10 +3,10 @@ package main
 import (
 	"math"
 
-	"github.com/mike-ward/go-charts/chart"
-	"github.com/mike-ward/go-charts/series"
-	"github.com/mike-ward/go-charts/transform"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/chart"
+	"github.com/go-gui-org/go-charts/series"
+	"github.com/go-gui-org/go-charts/transform"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 func demoTransformMA(w *gui.Window) gui.View {

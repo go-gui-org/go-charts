@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/mike-ward/go-charts/internal/fmath"
-	"github.com/mike-ward/go-charts/series"
+	"github.com/go-gui-org/go-charts/internal/fmath"
+	"github.com/go-gui-org/go-charts/series"
 )
 
 // BollingerBands returns upper, middle (SMA), and lower band series.

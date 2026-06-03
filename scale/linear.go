@@ -1,6 +1,6 @@
 package scale
 
-import "github.com/mike-ward/go-charts/internal/fmath"
+import "github.com/go-gui-org/go-charts/internal/fmath"
 
 // Linear is a linear data-to-pixel scale.
 type Linear struct {

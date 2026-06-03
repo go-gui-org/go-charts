@@ -3,7 +3,7 @@ package chart
 import (
 	"testing"
 
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // TestGenerateLayout_NilBase verifies that calling generateLayout with a nil

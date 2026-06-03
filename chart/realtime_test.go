@@ -5,7 +5,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/mike-ward/go-charts/series"
+	"github.com/go-gui-org/go-charts/series"
 )
 
 func TestRealTimeSeriesAppend(t *testing.T) {

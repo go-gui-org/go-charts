@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"math"
 
-	"github.com/mike-ward/go-charts/internal/fmath"
+	"github.com/go-gui-org/go-charts/internal/fmath"
 )
 
 // Log is a logarithmic data-to-pixel scale.

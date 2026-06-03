@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/mike-ward/go-charts/axis"
-	"github.com/mike-ward/go-charts/chart"
-	"github.com/mike-ward/go-charts/series"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/axis"
+	"github.com/go-gui-org/go-charts/chart"
+	"github.com/go-gui-org/go-charts/series"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 func demoLogAxis(w *gui.Window) gui.View {

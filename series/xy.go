@@ -3,8 +3,8 @@ package series
 import (
 	"fmt"
 
-	"github.com/mike-ward/go-charts/internal/fmath"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/internal/fmath"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // Point represents a single (X, Y) data point.

@@ -4,7 +4,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/mike-ward/go-charts/axis"
+	"github.com/go-gui-org/go-charts/axis"
 )
 
 // --- calcBins ---

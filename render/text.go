@@ -1,6 +1,6 @@
 package render
 
-import "github.com/mike-ward/go-gui/gui"
+import "github.com/go-gui-org/go-gui/gui"
 
 // Text draws text at (x, y) using the given style.
 func (c *Context) Text(x, y float32, text string, style gui.TextStyle) {

@@ -4,10 +4,10 @@ import (
 	"math"
 	"time"
 
-	"github.com/mike-ward/go-charts/axis"
-	"github.com/mike-ward/go-charts/render"
-	"github.com/mike-ward/go-charts/theme"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/axis"
+	"github.com/go-gui-org/go-charts/render"
+	"github.com/go-gui-org/go-charts/theme"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // zoomState persists zoom/pan/selection across frames via

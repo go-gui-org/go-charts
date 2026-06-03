@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"math"
 
-	"github.com/mike-ward/go-charts/axis"
+	"github.com/go-gui-org/go-charts/axis"
 )
 
 // autoLinearAxis returns a configured Axis for the given data range.

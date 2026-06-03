@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 func TestWaterfallBuildBars(t *testing.T) {

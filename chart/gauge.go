@@ -6,9 +6,9 @@ import (
 	"log/slog"
 	"math"
 
-	"github.com/mike-ward/go-charts/render"
-	"github.com/mike-ward/go-charts/theme"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/render"
+	"github.com/go-gui-org/go-charts/theme"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // GaugeZone defines a colored range on the gauge arc.

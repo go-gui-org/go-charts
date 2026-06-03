@@ -3,9 +3,9 @@ package chart
 import (
 	"time"
 
-	"github.com/mike-ward/go-charts/axis"
-	"github.com/mike-ward/go-charts/series"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/axis"
+	"github.com/go-gui-org/go-charts/series"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // animState persists entry/transition animation progress across

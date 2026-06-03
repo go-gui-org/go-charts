@@ -1,6 +1,6 @@
 package theme
 
-import "github.com/mike-ward/go-gui/gui"
+import "github.com/go-gui-org/go-gui/gui"
 
 // WithAlpha returns a copy of the color with the given alpha
 // (0.0 = fully transparent, 1.0 = fully opaque).

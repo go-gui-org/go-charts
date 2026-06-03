@@ -1,10 +1,10 @@
-module github.com/mike-ward/go-charts
+module github.com/go-gui-org/go-charts
 
 go 1.26.0
 
 require (
-	github.com/mike-ward/go-glyph v1.7.1
-	github.com/mike-ward/go-gui v0.20.1
+	github.com/go-gui-org/go-glyph v1.9.0
+	github.com/go-gui-org/go-gui v0.21.0
 )
 
 require (
@@ -19,4 +19,10 @@ require (
 	github.com/yuin/goldmark v1.8.2 // indirect
 	github.com/yuin/goldmark-emoji v1.0.6 // indirect
 	golang.org/x/sys v0.43.0 // indirect
+	golang.org/x/text v0.34.0 // indirect
+)
+
+replace (
+	github.com/go-gui-org/go-glyph => ../go-glyph
+	github.com/go-gui-org/go-gui => ../go-gui
 )

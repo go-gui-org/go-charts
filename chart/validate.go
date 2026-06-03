@@ -3,7 +3,7 @@ package chart
 import (
 	"strconv"
 
-	"github.com/mike-ward/go-charts/series"
+	"github.com/go-gui-org/go-charts/series"
 )
 
 // checkSeriesLengths returns an error string if any series has

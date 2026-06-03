@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-gui/gui"
 
-	"github.com/mike-ward/go-charts/theme"
+	"github.com/go-gui-org/go-charts/theme"
 )
 
 func catalogPanel(w *gui.Window, entries []DemoEntry) gui.View {

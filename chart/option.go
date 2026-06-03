@@ -1,8 +1,8 @@
 package chart
 
 import (
-	"github.com/mike-ward/go-charts/theme"
-	"github.com/mike-ward/go-gui/gui"
+	"github.com/go-gui-org/go-charts/theme"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 // Option applies a configuration override to a BaseCfg. Works

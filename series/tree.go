@@ -1,6 +1,6 @@
 package series
 
-import "github.com/mike-ward/go-gui/gui"
+import "github.com/go-gui-org/go-gui/gui"
 
 // TreeNode represents a node in a hierarchical dataset for treemap
 // charts. Leaf nodes carry a Value directly; branch nodes derive

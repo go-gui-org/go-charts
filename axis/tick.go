@@ -3,7 +3,7 @@ package axis
 import (
 	"math"
 
-	"github.com/mike-ward/go-charts/internal/fmath"
+	"github.com/go-gui-org/go-charts/internal/fmath"
 )
 
 // NiceNumber computes a "nice" number approximately equal to the

@@ -2,7 +2,7 @@
 // gui.DrawContext.
 package render
 
-import "github.com/mike-ward/go-gui/gui"
+import "github.com/go-gui-org/go-gui/gui"
 
 // Context wraps gui.DrawContext with chart-specific drawing
 // helpers. Methods currently delegate to DrawContext; this layer
