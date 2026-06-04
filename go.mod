@@ -26,3 +26,8 @@ replace (
 	github.com/go-gui-org/go-glyph => ../go-glyph
 	github.com/go-gui-org/go-gui => ../go-gui
 )
+
+// Keep CI workflows in sync with the require versions above:
+//   .github/workflows/ci.yml
+//   .github/workflows/gallery.yml
+// Update the `ref:` on the go-gui / go-glyph checkout steps.

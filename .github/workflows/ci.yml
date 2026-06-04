@@ -19,6 +19,20 @@ jobs:
         with:
           go-version-file: go.mod
 
+      - name: Checkout go-gui
+        uses: actions/checkout@v4
+        with:
+          repository: go-gui-org/go-gui
+          path: ../go-gui
+          ref: v0.21.0
+
+      - name: Checkout go-glyph
+        uses: actions/checkout@v4
+        with:
+          repository: go-gui-org/go-glyph
+          path: ../go-glyph
+          ref: v1.9.0
+
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libfreetype6-dev libharfbuzz-dev libpango1.0-dev libfontconfig1-dev libhunspell-dev

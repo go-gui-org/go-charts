@@ -179,8 +179,8 @@ func (sv *sankeyView) hitTest(
 		}
 	}
 	// Check links in reverse order (last drawn = on top).
-	for i := len(sv.links) - 1; i >= 0; i-- {
-		if pointInPolygon(mx, my, sv.links[i].Poly) {
+	for i, link := range slices.Backward(sv.links) {
+		if pointInPolygon(mx, my, link.Poly) {
 			return "link", i, true
 		}
 	}
