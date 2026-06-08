@@ -14,7 +14,7 @@ const (
 const catalogWidth float32 = 250
 
 func runShowcase() {
-	gui.SetTheme(gui.ThemeDarkBordered)
+	gui.SetTheme(gui.ThemeDark.WithBorders(true))
 
 	w := gui.NewWindow(gui.WindowCfg{
 		State:  newShowcaseApp(),
