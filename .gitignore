@@ -33,3 +33,5 @@ Thumbs.db
 
 # Generated gallery output
 docs/gallery/
+
+.claude/
