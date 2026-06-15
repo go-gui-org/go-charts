@@ -18,21 +18,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
 
       - name: Checkout go-gui
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: go-gui-org/go-gui
           path: go-gui
           ref: v0.25.0
 
       - name: Checkout go-glyph
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: go-gui-org/go-glyph
           path: go-glyph
@@ -58,7 +58,7 @@ jobs:
           <a href="gallery/">go-charts gallery</a>
           EOF
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: site
 
@@ -70,4 +70,4 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
