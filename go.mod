@@ -23,8 +23,6 @@ require (
 	golang.org/x/text v0.38.0 // indirect
 )
 
-replace github.com/go-gui-org/go-glyph => ../go-glyph
-
 // Keep CI workflows in sync with the require versions above:
 //   .github/workflows/ci.yml
 //   .github/workflows/gallery.yml
