@@ -29,7 +29,7 @@ jobs:
         with:
           repository: go-gui-org/go-gui
           path: go-gui
-          ref: v0.28.1
+          ref: v0.28.2
 
       - name: Checkout go-glyph
         uses: actions/checkout@v6
