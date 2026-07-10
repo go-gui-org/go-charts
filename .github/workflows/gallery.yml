@@ -29,14 +29,14 @@ jobs:
         with:
           repository: go-gui-org/go-gui
           path: go-gui
-          ref: v0.28.2
+          ref: v0.30.0
 
       - name: Checkout go-glyph
         uses: actions/checkout@v6
         with:
           repository: go-gui-org/go-glyph
           path: go-glyph
-          ref: v1.11.0
+          ref: v1.13.1
 
       - name: Update go.mod replace directives
         run: |
@@ -44,10 +44,10 @@ jobs:
           go mod edit -replace github.com/go-gui-org/go-glyph=./go-glyph
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libfreetype6-dev libharfbuzz-dev libpango1.0-dev libfontconfig1-dev libhunspell-dev
+        run: sudo apt-get update && sudo apt-get install -y libfreetype6-dev libharfbuzz-dev libpango1.0-dev libfontconfig1-dev libhunspell-dev libegl1-mesa-dev libgl1-mesa-dev xvfb
 
       - name: Generate gallery
-        run: go run -tags gallery ./examples/showcase -out site/gallery
+        run: xvfb-run --auto-servernum go run -tags gallery ./examples/showcase -out site/gallery
 
       - name: Landing page
         run: |
