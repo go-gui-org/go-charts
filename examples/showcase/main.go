@@ -8,7 +8,6 @@ import (
 const (
 	scrollCatalog uint32 = iota + 1
 	scrollDetail
-	focusSearch
 )
 
 const catalogWidth float32 = 250
