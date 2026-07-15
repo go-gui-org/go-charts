@@ -8,7 +8,8 @@ func detailPanel(w *gui.Window, entries []DemoEntry) gui.View {
 
 	if len(entries) == 0 {
 		return gui.Column(gui.ContainerCfg{
-			IDScroll:   scrollDetail,
+			ID:         scrollDetail,
+			Scrollable: true,
 			Sizing:     gui.FillFill,
 			SizeBorder: gui.NoBorder,
 			Padding:    gui.Some(detailPadding()),
@@ -29,7 +30,8 @@ func detailPanel(w *gui.Window, entries []DemoEntry) gui.View {
 	content := componentDemo(w, entry.ID)
 
 	return gui.Column(gui.ContainerCfg{
-		IDScroll:   scrollDetail,
+		ID:         scrollDetail,
+		Scrollable: true,
 		Sizing:     gui.FillFill,
 		Color:      t.ColorBackground,
 		SizeBorder: gui.NoBorder,

@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	scrollCatalog uint32 = iota + 1
-	scrollDetail
+	scrollCatalog = "catalog"
+	scrollDetail  = "detail"
 )
 
 const catalogWidth float32 = 250
