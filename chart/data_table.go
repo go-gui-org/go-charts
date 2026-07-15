@@ -10,20 +10,6 @@ import (
 	"github.com/go-gui-org/go-gui/gui"
 )
 
-// idScrollHash returns a non-zero uint32 from a string ID for
-// use as a gui.Table IDScroll key.
-func idScrollHash(id string) uint32 {
-	h := uint32(2166136261)
-	for i := range id {
-		h ^= uint32(id[i])
-		h *= 16777619
-	}
-	if h == 0 {
-		h = 1
-	}
-	return h
-}
-
 // fmtVal formats a float64 for display in a data table.
 func fmtVal(v float64) string {
 	return strconv.FormatFloat(v, 'g', 6, 64)
@@ -64,7 +50,7 @@ func dataTableView(
 
 	return gui.Table(gui.TableCfg{
 		ID:           id,
-		IDScroll:     idScrollHash(id),
+		Scrollable:   true,
 		Data:         data,
 		ColorBorder:  gui.Gray,
 		SizeBorder:   1,
