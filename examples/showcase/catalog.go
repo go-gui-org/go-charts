@@ -43,7 +43,6 @@ func catalogPanel(w *gui.Window, entries []DemoEntry) gui.View {
 func searchInput(app *ShowcaseApp) gui.View {
 	return gui.Input(gui.InputCfg{
 		ID:          "showcase-nav-search",
-		Focusable:   true,
 		Sizing:      gui.FillFit,
 		Text:        app.NavQuery,
 		Placeholder: "Search charts...",
