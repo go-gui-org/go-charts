@@ -3,8 +3,8 @@ module github.com/go-gui-org/go-charts
 go 1.26.4
 
 require (
-	github.com/go-gui-org/go-glyph v1.17.1
-	github.com/go-gui-org/go-gui v0.38.1
+	github.com/go-gui-org/go-glyph v1.17.2
+	github.com/go-gui-org/go-gui v0.39.0
 )
 
 require (
