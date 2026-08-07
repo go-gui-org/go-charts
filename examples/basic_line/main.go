@@ -85,10 +85,10 @@ func view(w *gui.Window) gui.View {
 				Content: []gui.View{
 					gui.Button(gui.ButtonCfg{
 						Content: []gui.View{gui.Text(gui.TextCfg{Text: "Export PNG"})},
-						OnClick: func(_ *gui.Layout, _ *gui.Event, w *gui.Window) {
+						OnClick: func(ctx gui.EventCtx) {
 							v := lineChart()
 							err := chart.ExportPNG(v, 800, 600, "line-chart.png")
-							a := gui.State[App](w)
+							a := gui.State[App](ctx.Window)
 							if err != nil {
 								a.Status = fmt.Sprintf("Export failed: %v", err)
 							} else {

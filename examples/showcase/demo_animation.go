@@ -108,11 +108,10 @@ func demoAnimEntry(w *gui.Window) gui.View {
 				TextStyle: gui.CurrentTheme().N4,
 			}),
 		},
-		OnClick: func(_ *gui.Layout, e *gui.Event, w *gui.Window) {
-			chart.ResetEntryAnimation(w, "anim-entry-line")
-			chart.ResetEntryAnimation(w, "anim-entry-bar")
-			chart.ResetEntryAnimation(w, "anim-entry-pie")
-			e.IsHandled = true
+		OnClick: func(ctx gui.EventCtx) {
+			chart.ResetEntryAnimation(ctx.Window, "anim-entry-line")
+			chart.ResetEntryAnimation(ctx.Window, "anim-entry-bar")
+			chart.ResetEntryAnimation(ctx.Window, "anim-entry-pie")
 		},
 	})
 
@@ -169,14 +168,13 @@ func demoAnimTransition(w *gui.Window) gui.View {
 				TextStyle: gui.CurrentTheme().N4,
 			}),
 		},
-		OnClick: func(_ *gui.Layout, e *gui.Event, w *gui.Window) {
+		OnClick: func(ctx gui.EventCtx) {
 			sm := gui.StateMap[string, transState](
-				w, "anim-trans-demo", 1)
+				ctx.Window, "anim-trans-demo", 1)
 			ts, _ := sm.Get("state")
 			ts.Toggle = !ts.Toggle
 			ts.Version++
 			sm.Set("state", ts)
-			e.IsHandled = true
 		},
 	})
 

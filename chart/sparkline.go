@@ -181,36 +181,30 @@ func (sv *sparklineView) GenerateLayout(
 	return gui.DrawCanvas(dcCfg).GenerateLayout(w)
 }
 
-func (sv *sparklineView) internalClick(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (sv *sparklineView) internalClick(ctx gui.EventCtx) {
+	ctx.Consume()
 	if sv.cfg.OnClick != nil {
-		sv.cfg.OnClick(l, e, w)
+		sv.cfg.OnClick(ctx)
 	}
 }
 
-func (sv *sparklineView) internalHover(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
-	sv.hoverPx = e.MouseX - l.Shape.X
-	sv.hoverPy = e.MouseY - l.Shape.Y
+func (sv *sparklineView) internalHover(ctx gui.EventCtx) {
+	ctx.Consume()
+	sv.hoverPx = ctx.Event.MouseX - ctx.Layout.Shape.X
+	sv.hoverPy = ctx.Event.MouseY - ctx.Layout.Shape.Y
 	sv.hovering = true
-	saveHover(w, l, sv.cfg.ID, true, sv.hoverPx, sv.hoverPy)
+	saveHover(ctx.Window, ctx.Layout, sv.cfg.ID, true, sv.hoverPx, sv.hoverPy)
 	if sv.cfg.OnHover != nil {
-		sv.cfg.OnHover(l, e, w)
+		sv.cfg.OnHover(ctx)
 	}
 }
 
-func (sv *sparklineView) internalMouseLeave(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (sv *sparklineView) internalMouseLeave(ctx gui.EventCtx) {
+	ctx.Consume()
 	sv.hovering = false
-	saveHover(w, l, sv.cfg.ID, false, 0, 0)
+	saveHover(ctx.Window, ctx.Layout, sv.cfg.ID, false, 0, 0)
 	if sv.cfg.OnMouseLeave != nil {
-		sv.cfg.OnMouseLeave(l, e, w)
+		sv.cfg.OnMouseLeave(ctx)
 	}
 }
 

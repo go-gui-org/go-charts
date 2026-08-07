@@ -103,43 +103,37 @@ func (fv *funnelView) GenerateLayout(w *gui.Window) gui.Layout {
 	}).GenerateLayout(w)
 }
 
-func (fv *funnelView) internalClick(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (fv *funnelView) internalClick(ctx gui.EventCtx) {
+	ctx.Consume()
 	if fv.cfg.OnClick != nil {
-		fv.cfg.OnClick(l, e, w)
+		fv.cfg.OnClick(ctx)
 	}
 }
 
-func (fv *funnelView) internalHover(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
-	fv.hoverPx = e.MouseX - l.Shape.X
-	fv.hoverPy = e.MouseY - l.Shape.Y
+func (fv *funnelView) internalHover(ctx gui.EventCtx) {
+	ctx.Consume()
+	fv.hoverPx = ctx.Event.MouseX - ctx.Layout.Shape.X
+	fv.hoverPy = ctx.Event.MouseY - ctx.Layout.Shape.Y
 	fv.hovering = true
-	saveHover(w, l, fv.cfg.ID, true, fv.hoverPx, fv.hoverPy)
+	saveHover(ctx.Window, ctx.Layout, fv.cfg.ID, true, fv.hoverPx, fv.hoverPy)
 	_, ok := fv.hitTest(fv.hoverPx, fv.hoverPy)
 	if ok {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else {
-		w.SetMouseCursorArrow()
+		ctx.Window.SetMouseCursorArrow()
 	}
 	if fv.cfg.OnHover != nil {
-		fv.cfg.OnHover(l, e, w)
+		fv.cfg.OnHover(ctx)
 	}
 }
 
-func (fv *funnelView) internalMouseLeave(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (fv *funnelView) internalMouseLeave(ctx gui.EventCtx) {
+	ctx.Consume()
 	fv.hovering = false
-	saveHover(w, l, fv.cfg.ID, false, 0, 0)
-	w.SetMouseCursorArrow()
+	saveHover(ctx.Window, ctx.Layout, fv.cfg.ID, false, 0, 0)
+	ctx.Window.SetMouseCursorArrow()
 	if fv.cfg.OnMouseLeave != nil {
-		fv.cfg.OnMouseLeave(l, e, w)
+		fv.cfg.OnMouseLeave(ctx)
 	}
 }
 

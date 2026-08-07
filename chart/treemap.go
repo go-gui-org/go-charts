@@ -107,43 +107,37 @@ func (tv *treemapView) GenerateLayout(w *gui.Window) gui.Layout {
 	}).GenerateLayout(w)
 }
 
-func (tv *treemapView) internalClick(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (tv *treemapView) internalClick(ctx gui.EventCtx) {
+	ctx.Consume()
 	if tv.cfg.OnClick != nil {
-		tv.cfg.OnClick(l, e, w)
+		tv.cfg.OnClick(ctx)
 	}
 }
 
-func (tv *treemapView) internalHover(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
-	tv.hoverPx = e.MouseX - l.Shape.X
-	tv.hoverPy = e.MouseY - l.Shape.Y
+func (tv *treemapView) internalHover(ctx gui.EventCtx) {
+	ctx.Consume()
+	tv.hoverPx = ctx.Event.MouseX - ctx.Layout.Shape.X
+	tv.hoverPy = ctx.Event.MouseY - ctx.Layout.Shape.Y
 	tv.hovering = true
-	saveHover(w, l, tv.cfg.ID, true, tv.hoverPx, tv.hoverPy)
+	saveHover(ctx.Window, ctx.Layout, tv.cfg.ID, true, tv.hoverPx, tv.hoverPy)
 	idx, ok := tv.hitTest(tv.hoverPx, tv.hoverPy)
 	if ok && !tv.cells[idx].IsHeader {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else {
-		w.SetMouseCursorArrow()
+		ctx.Window.SetMouseCursorArrow()
 	}
 	if tv.cfg.OnHover != nil {
-		tv.cfg.OnHover(l, e, w)
+		tv.cfg.OnHover(ctx)
 	}
 }
 
-func (tv *treemapView) internalMouseLeave(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (tv *treemapView) internalMouseLeave(ctx gui.EventCtx) {
+	ctx.Consume()
 	tv.hovering = false
-	saveHover(w, l, tv.cfg.ID, false, 0, 0)
-	w.SetMouseCursorArrow()
+	saveHover(ctx.Window, ctx.Layout, tv.cfg.ID, false, 0, 0)
+	ctx.Window.SetMouseCursorArrow()
 	if tv.cfg.OnMouseLeave != nil {
-		tv.cfg.OnMouseLeave(l, e, w)
+		tv.cfg.OnMouseLeave(ctx)
 	}
 }
 

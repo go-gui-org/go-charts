@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+- **BREAKING: event callbacks take a single `gui.EventCtx`.** Bump go-gui
+  v0.51.1 → v0.52.0. Every callback that took
+  `(*gui.Layout, *gui.Event, *gui.Window)` now takes `func(gui.EventCtx)`, which
+  bundles the three as `ctx.Layout`, `ctx.Event` and `ctx.Window`. This reaches
+  the public chart config surface: `OnClick`, `OnHover`, `OnMouseLeave` and
+  friends on every `*Cfg`.
+- **Consume-class callbacks are handled by default.** `OnClick`, `OnMouseUp` and
+  `OnGesture` are marked handled by dispatch before the callback runs, so the
+  trailing `e.IsHandled = true` is gone. Call `ctx.Bubble()` on a path that
+  means "not mine". Hover, move, leave and scroll are unchanged and still call
+  `ctx.Consume()`.
+- Migration guide upstream: `docs/migration-eventctx.md` in go-gui.
+
 ## v0.5.8 - 2026-05-17
 
 - Bump go-gui v0.17.0 → v0.19.1 (scroll phase bridge, context menu focus fix,
@@ -26,14 +41,15 @@
 ## v0.5.3 - 2026-04-12
 
 - Simplify codebase with modern Go 1.26 idioms: `cmp.Or` for defaults,
-  `slices.SortFunc`/`cmp.Compare`, builtin `min`/`max`, `slices.Clone`,
-  `wg.Go`; extract helpers to deduplicate legend, validation, and
-  ring-buffer logic; flatten guards and remove dead code (-285 net lines)
+  `slices.SortFunc`/`cmp.Compare`, builtin `min`/`max`, `slices.Clone`, `wg.Go`;
+  extract helpers to deduplicate legend, validation, and ring-buffer logic;
+  flatten guards and remove dead code (-285 net lines)
 
 ## v0.5.2 - 2026-04-10
 
-- Extract `InteractionCfg` from `BaseCfg`; zoom/pan/range-select/animate-transitions
-  fields now live only on XY chart configs
+- Extract `InteractionCfg` from `BaseCfg`;
+  zoom/pan/range-select/animate-transitions fields now live only on XY chart
+  configs
 - Expand axis/scale test coverage: table-driven tests for `axis.Linear`,
   `axis.Category`, `scale.Linear`, `scale.Log`
 

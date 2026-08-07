@@ -49,30 +49,27 @@ t     = (value - domainMin) / (domainMax - domainMin)   -> [0, 1]
 pixel = pixelMin + t * (pixelMax - pixelMin)             -> screen position
 ```
 
-The Y axis inverts `pixelMin`/`pixelMax` so that larger data values
-map to smaller (higher) pixel positions.
+The Y axis inverts `pixelMin`/`pixelMax` so that larger data values map to
+smaller (higher) pixel positions.
 
 ## Package Responsibilities
 
-| Package   | Role                                                |
-|-----------|-----------------------------------------------------|
-| `chart/`  | Orchestrates everything, implements `gui.View`      |
-| `series/` | Holds raw data, computes bounds                     |
-| `axis/`   | Generates human-readable ticks, delegates transforms|
-| `scale/`  | Pure math: data-to-pixel mapping                    |
-| `render/` | Thin wrapper over `gui.DrawContext` with helpers    |
-| `theme/`  | Colors, palettes, text styles, padding              |
+| Package   | Role                                                 |
+| --------- | ---------------------------------------------------- |
+| `chart/`  | Orchestrates everything, implements `gui.View`       |
+| `series/` | Holds raw data, computes bounds                      |
+| `axis/`   | Generates human-readable ticks, delegates transforms |
+| `scale/`  | Pure math: data-to-pixel mapping                     |
+| `render/` | Thin wrapper over `gui.DrawContext` with helpers     |
+| `theme/`  | Colors, palettes, text styles, padding               |
 
 ## Key Types
 
-- **`chart.*Cfg`** -- config structs for each chart type
-  (zero-initializable)
-- **`axis.Axis`** -- interface: `Label()`, `Ticks()`, `Transform()`,
-  `Inverse()`
+- **`chart.*Cfg`** -- config structs for each chart type (zero-initializable)
+- **`axis.Axis`** -- interface: `Label()`, `Ticks()`, `Transform()`, `Inverse()`
 - **`series.Series`** -- interface: `Name()`, `Len()`, `Color()`
 - **`series.XY`** -- `[]Point` with `Bounds()` method
-- **`scale.Scale`** -- interface: `Map()`, `Invert()`, `SetDomain()`,
-  `Domain()`
+- **`scale.Scale`** -- interface: `Map()`, `Invert()`, `SetDomain()`, `Domain()`
 - **`theme.Theme`** -- colors, text styles, palette, padding
 - **`render.Context`** -- wraps `*gui.DrawContext`
 
@@ -81,7 +78,10 @@ map to smaller (higher) pixel positions.
 - All chart types follow go-gui `*Cfg` struct convention.
 - Charts implement `gui.View` (`Content() []View`,
   `GenerateLayout(*Window) Layout`).
-- `gui.DrawCanvas` provides retained tessellation: the `OnDraw`
-  callback only fires when the chart's `Version` changes.
-- Event callbacks: `func(*gui.Layout, *gui.Event, *gui.Window)`.
+- `gui.DrawCanvas` provides retained tessellation: the `OnDraw` callback only
+  fires when the chart's `Version` changes.
+- Event callbacks: `func(gui.EventCtx)`. `OnClick`, `OnMouseUp` and `OnGesture`
+  are consume-class — dispatch marks them handled before the callback runs, so
+  call `ctx.Bubble()` to pass one on. `OnHover`, `OnMouseLeave`, `OnMouseMove`
+  and `OnMouseScroll` still require `ctx.Consume()` to stop propagation.
 - Default sizing: `gui.FillFill`.

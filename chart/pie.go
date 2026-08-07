@@ -90,45 +90,45 @@ func (pv *pieView) GenerateLayout(w *gui.Window) gui.Layout {
 	}).GenerateLayout(w)
 }
 
-func (pv *pieView) internalClick(l *gui.Layout, e *gui.Event, w *gui.Window) {
-	mx := e.MouseX
-	my := e.MouseY
+func (pv *pieView) internalClick(ctx gui.EventCtx) {
+	mx := ctx.Event.MouseX
+	my := ctx.Event.MouseY
 	if idx := legendHitTest(pv.lastLB, mx, my); idx >= 0 {
-		e.IsHandled = true
-		l.Shape.Version = toggleHidden(w, pv.cfg.ID, idx)
+		ctx.Consume()
+		ctx.Layout.Shape.Version = toggleHidden(ctx.Window, pv.cfg.ID, idx)
 		return
 	}
 	if pv.cfg.OnClick != nil {
-		pv.cfg.OnClick(l, e, w)
+		pv.cfg.OnClick(ctx)
 	}
 }
 
-func (pv *pieView) internalHover(l *gui.Layout, e *gui.Event, w *gui.Window) {
-	e.IsHandled = true
-	pv.hoverPx = e.MouseX - l.Shape.X
-	pv.hoverPy = e.MouseY - l.Shape.Y
+func (pv *pieView) internalHover(ctx gui.EventCtx) {
+	ctx.Consume()
+	pv.hoverPx = ctx.Event.MouseX - ctx.Layout.Shape.X
+	pv.hoverPy = ctx.Event.MouseY - ctx.Layout.Shape.Y
 	pv.hovering = true
-	saveHover(w, l, pv.cfg.ID, true, pv.hoverPx, pv.hoverPy)
+	saveHover(ctx.Window, ctx.Layout, pv.cfg.ID, true, pv.hoverPx, pv.hoverPy)
 	if legendHitTest(pv.lastLB, pv.hoverPx, pv.hoverPy) >= 0 {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else if pv.outerR > 0 &&
 		pv.hoveredSliceIndex(pv.hoverPx, pv.hoverPy, pv.cx, pv.cy, pv.outerR) >= 0 {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else {
-		w.SetMouseCursorArrow()
+		ctx.Window.SetMouseCursorArrow()
 	}
 	if pv.cfg.OnHover != nil {
-		pv.cfg.OnHover(l, e, w)
+		pv.cfg.OnHover(ctx)
 	}
 }
 
-func (pv *pieView) internalMouseLeave(l *gui.Layout, e *gui.Event, w *gui.Window) {
-	e.IsHandled = true
+func (pv *pieView) internalMouseLeave(ctx gui.EventCtx) {
+	ctx.Consume()
 	pv.hovering = false
-	saveHover(w, l, pv.cfg.ID, false, 0, 0)
-	w.SetMouseCursorArrow()
+	saveHover(ctx.Window, ctx.Layout, pv.cfg.ID, false, 0, 0)
+	ctx.Window.SetMouseCursorArrow()
 	if pv.cfg.OnMouseLeave != nil {
-		pv.cfg.OnMouseLeave(l, e, w)
+		pv.cfg.OnMouseLeave(ctx)
 	}
 }
 

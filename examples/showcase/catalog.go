@@ -46,8 +46,8 @@ func searchInput(app *ShowcaseApp) gui.View {
 		Sizing:      gui.FillFit,
 		Text:        app.NavQuery,
 		Placeholder: "Search charts...",
-		OnTextChanged: func(_ *gui.Layout, text string, w *gui.Window) {
-			gui.State[ShowcaseApp](w).NavQuery = text
+		OnTextChanged: func(text string, ctx gui.EventCtx) {
+			gui.State[ShowcaseApp](ctx.Window).NavQuery = text
 		},
 	})
 }
@@ -85,16 +85,15 @@ func groupPickerItem(label, key string, app *ShowcaseApp) gui.View {
 				TextStyle: t.N5,
 			}),
 		},
-		OnClick: func(_ *gui.Layout, e *gui.Event, w *gui.Window) {
-			sa := gui.State[ShowcaseApp](w)
+		OnClick: func(ctx gui.EventCtx) {
+			sa := gui.State[ShowcaseApp](ctx.Window)
 			sa.SelectedGroup = key
 			sa.NavQuery = ""
 			entries := filteredEntries(sa)
 			sa.SelectedComponent = preferredComponentForGroup(entries)
-			w.ScrollVerticalTo(scrollCatalog, 0)
-			w.ScrollVerticalTo(scrollDetail, 0)
-			w.ScrollHorizontalTo(scrollDetail, 0)
-			e.IsHandled = true
+			ctx.Window.ScrollVerticalTo(scrollCatalog, 0)
+			ctx.Window.ScrollVerticalTo(scrollDetail, 0)
+			ctx.Window.ScrollHorizontalTo(scrollDetail, 0)
 		},
 	})
 }
@@ -129,8 +128,8 @@ func themePicker(app *ShowcaseApp) gui.View {
 				TextStyle: t.N5,
 			}),
 		},
-		OnClick: func(_ *gui.Layout, e *gui.Event, w *gui.Window) {
-			sa := gui.State[ShowcaseApp](w)
+		OnClick: func(ctx gui.EventCtx) {
+			sa := gui.State[ShowcaseApp](ctx.Window)
 			next := 0
 			for i, tc := range themeChoices {
 				if tc.key == sa.SelectedTheme {
@@ -140,8 +139,7 @@ func themePicker(app *ShowcaseApp) gui.View {
 			}
 			sa.SelectedTheme = themeChoices[next].key
 			applyChartTheme(sa.SelectedTheme)
-			w.ClearDrawCanvasCache()
-			e.IsHandled = true
+			ctx.Window.ClearDrawCanvasCache()
 		},
 	})
 }
@@ -231,12 +229,11 @@ func catalogRow(entry DemoEntry, app *ShowcaseApp, t gui.Theme) gui.View {
 				TextStyle: t.N4,
 			}),
 		},
-		OnClick: func(_ *gui.Layout, e *gui.Event, w *gui.Window) {
-			sa := gui.State[ShowcaseApp](w)
+		OnClick: func(ctx gui.EventCtx) {
+			sa := gui.State[ShowcaseApp](ctx.Window)
 			sa.SelectedComponent = entry.ID
-			w.ScrollVerticalTo(scrollDetail, 0)
-			w.ScrollHorizontalTo(scrollDetail, 0)
-			e.IsHandled = true
+			ctx.Window.ScrollVerticalTo(scrollDetail, 0)
+			ctx.Window.ScrollHorizontalTo(scrollDetail, 0)
 		},
 	})
 }
