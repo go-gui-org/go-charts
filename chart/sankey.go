@@ -125,43 +125,37 @@ func (sv *sankeyView) GenerateLayout(w *gui.Window) gui.Layout {
 	}).GenerateLayout(w)
 }
 
-func (sv *sankeyView) internalClick(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (sv *sankeyView) internalClick(ctx gui.EventCtx) {
+	ctx.Consume()
 	if sv.cfg.OnClick != nil {
-		sv.cfg.OnClick(l, e, w)
+		sv.cfg.OnClick(ctx)
 	}
 }
 
-func (sv *sankeyView) internalHover(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
-	sv.hoverPx = e.MouseX - l.Shape.X
-	sv.hoverPy = e.MouseY - l.Shape.Y
+func (sv *sankeyView) internalHover(ctx gui.EventCtx) {
+	ctx.Consume()
+	sv.hoverPx = ctx.Event.MouseX - ctx.Layout.Shape.X
+	sv.hoverPy = ctx.Event.MouseY - ctx.Layout.Shape.Y
 	sv.hovering = true
-	saveHover(w, l, sv.cfg.ID, true, sv.hoverPx, sv.hoverPy)
+	saveHover(ctx.Window, ctx.Layout, sv.cfg.ID, true, sv.hoverPx, sv.hoverPy)
 	_, _, ok := sv.hitTest(sv.hoverPx, sv.hoverPy)
 	if ok {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else {
-		w.SetMouseCursorArrow()
+		ctx.Window.SetMouseCursorArrow()
 	}
 	if sv.cfg.OnHover != nil {
-		sv.cfg.OnHover(l, e, w)
+		sv.cfg.OnHover(ctx)
 	}
 }
 
-func (sv *sankeyView) internalMouseLeave(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (sv *sankeyView) internalMouseLeave(ctx gui.EventCtx) {
+	ctx.Consume()
 	sv.hovering = false
-	saveHover(w, l, sv.cfg.ID, false, 0, 0)
-	w.SetMouseCursorArrow()
+	saveHover(ctx.Window, ctx.Layout, sv.cfg.ID, false, 0, 0)
+	ctx.Window.SetMouseCursorArrow()
 	if sv.cfg.OnMouseLeave != nil {
-		sv.cfg.OnMouseLeave(l, e, w)
+		sv.cfg.OnMouseLeave(ctx)
 	}
 }
 

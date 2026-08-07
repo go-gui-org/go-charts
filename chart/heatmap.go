@@ -103,42 +103,36 @@ func (hv *heatmapView) GenerateLayout(w *gui.Window) gui.Layout {
 	}).GenerateLayout(w)
 }
 
-func (hv *heatmapView) internalClick(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
+func (hv *heatmapView) internalClick(ctx gui.EventCtx) {
 	if hv.cfg.OnClick != nil {
-		hv.cfg.OnClick(l, e, w)
+		hv.cfg.OnClick(ctx)
 	}
 }
 
-func (hv *heatmapView) internalHover(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
-	hv.hoverPx = e.MouseX - l.Shape.X
-	hv.hoverPy = e.MouseY - l.Shape.Y
+func (hv *heatmapView) internalHover(ctx gui.EventCtx) {
+	ctx.Consume()
+	hv.hoverPx = ctx.Event.MouseX - ctx.Layout.Shape.X
+	hv.hoverPy = ctx.Event.MouseY - ctx.Layout.Shape.Y
 	hv.hovering = true
-	saveHover(w, l, hv.cfg.ID, true, hv.hoverPx, hv.hoverPy)
+	saveHover(ctx.Window, ctx.Layout, hv.cfg.ID, true, hv.hoverPx, hv.hoverPy)
 	row, col, ok := hv.hitTest(hv.hoverPx, hv.hoverPy)
 	if ok && !hv.cfg.Data.IsNaN(row, col) {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else {
-		w.SetMouseCursorArrow()
+		ctx.Window.SetMouseCursorArrow()
 	}
 	if hv.cfg.OnHover != nil {
-		hv.cfg.OnHover(l, e, w)
+		hv.cfg.OnHover(ctx)
 	}
 }
 
-func (hv *heatmapView) internalMouseLeave(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (hv *heatmapView) internalMouseLeave(ctx gui.EventCtx) {
+	ctx.Consume()
 	hv.hovering = false
-	saveHover(w, l, hv.cfg.ID, false, 0, 0)
-	w.SetMouseCursorArrow()
+	saveHover(ctx.Window, ctx.Layout, hv.cfg.ID, false, 0, 0)
+	ctx.Window.SetMouseCursorArrow()
 	if hv.cfg.OnMouseLeave != nil {
-		hv.cfg.OnMouseLeave(l, e, w)
+		hv.cfg.OnMouseLeave(ctx)
 	}
 }
 

@@ -153,33 +153,29 @@ func (gv *gaugeView) GenerateLayout(w *gui.Window) gui.Layout {
 	}).GenerateLayout(w)
 }
 
-func (gv *gaugeView) internalHover(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
-	gv.hoverPx = e.MouseX - l.Shape.X
-	gv.hoverPy = e.MouseY - l.Shape.Y
+func (gv *gaugeView) internalHover(ctx gui.EventCtx) {
+	ctx.Consume()
+	gv.hoverPx = ctx.Event.MouseX - ctx.Layout.Shape.X
+	gv.hoverPy = ctx.Event.MouseY - ctx.Layout.Shape.Y
 	gv.hovering = true
-	saveHover(w, l, gv.cfg.ID, true, gv.hoverPx, gv.hoverPy)
+	saveHover(ctx.Window, ctx.Layout, gv.cfg.ID, true, gv.hoverPx, gv.hoverPy)
 	if gv.outerR > 0 && gv.gaugeHitTest(gv.hoverPx, gv.hoverPy) {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else {
-		w.SetMouseCursorArrow()
+		ctx.Window.SetMouseCursorArrow()
 	}
 	if gv.cfg.OnHover != nil {
-		gv.cfg.OnHover(l, e, w)
+		gv.cfg.OnHover(ctx)
 	}
 }
 
-func (gv *gaugeView) internalMouseLeave(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (gv *gaugeView) internalMouseLeave(ctx gui.EventCtx) {
+	ctx.Consume()
 	gv.hovering = false
-	saveHover(w, l, gv.cfg.ID, false, 0, 0)
-	w.SetMouseCursorArrow()
+	saveHover(ctx.Window, ctx.Layout, gv.cfg.ID, false, 0, 0)
+	ctx.Window.SetMouseCursorArrow()
 	if gv.cfg.OnMouseLeave != nil {
-		gv.cfg.OnMouseLeave(l, e, w)
+		gv.cfg.OnMouseLeave(ctx)
 	}
 }
 

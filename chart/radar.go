@@ -114,50 +114,44 @@ func (rv *radarView) GenerateLayout(w *gui.Window) gui.Layout {
 	}).GenerateLayout(w)
 }
 
-func (rv *radarView) internalClick(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	mx := e.MouseX
-	my := e.MouseY
+func (rv *radarView) internalClick(ctx gui.EventCtx) {
+	mx := ctx.Event.MouseX
+	my := ctx.Event.MouseY
 	if idx := legendHitTest(rv.lastLB, mx, my); idx >= 0 {
-		e.IsHandled = true
-		l.Shape.Version = toggleHidden(w, rv.cfg.ID, idx)
+		ctx.Consume()
+		ctx.Layout.Shape.Version = toggleHidden(ctx.Window, rv.cfg.ID, idx)
 		return
 	}
 	if rv.cfg.OnClick != nil {
-		rv.cfg.OnClick(l, e, w)
+		rv.cfg.OnClick(ctx)
 	}
 }
 
-func (rv *radarView) internalHover(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
-	rv.hoverPx = e.MouseX - l.Shape.X
-	rv.hoverPy = e.MouseY - l.Shape.Y
+func (rv *radarView) internalHover(ctx gui.EventCtx) {
+	ctx.Consume()
+	rv.hoverPx = ctx.Event.MouseX - ctx.Layout.Shape.X
+	rv.hoverPy = ctx.Event.MouseY - ctx.Layout.Shape.Y
 	rv.hovering = true
-	saveHover(w, l, rv.cfg.ID, true, rv.hoverPx, rv.hoverPy)
+	saveHover(ctx.Window, ctx.Layout, rv.cfg.ID, true, rv.hoverPx, rv.hoverPy)
 	if legendHitTest(rv.lastLB, rv.hoverPx, rv.hoverPy) >= 0 {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else if rv.hoveredSeriesIndex(rv.hoverPx, rv.hoverPy) >= 0 {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else {
-		w.SetMouseCursorArrow()
+		ctx.Window.SetMouseCursorArrow()
 	}
 	if rv.cfg.OnHover != nil {
-		rv.cfg.OnHover(l, e, w)
+		rv.cfg.OnHover(ctx)
 	}
 }
 
-func (rv *radarView) internalMouseLeave(
-	l *gui.Layout, e *gui.Event, w *gui.Window,
-) {
-	e.IsHandled = true
+func (rv *radarView) internalMouseLeave(ctx gui.EventCtx) {
+	ctx.Consume()
 	rv.hovering = false
-	saveHover(w, l, rv.cfg.ID, false, 0, 0)
-	w.SetMouseCursorArrow()
+	saveHover(ctx.Window, ctx.Layout, rv.cfg.ID, false, 0, 0)
+	ctx.Window.SetMouseCursorArrow()
 	if rv.cfg.OnMouseLeave != nil {
-		rv.cfg.OnMouseLeave(l, e, w)
+		rv.cfg.OnMouseLeave(ctx)
 	}
 }
 

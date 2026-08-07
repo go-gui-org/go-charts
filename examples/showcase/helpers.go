@@ -194,7 +194,7 @@ func exportButtons(id string, chartView gui.View) gui.View {
 					Text:      "Show SVG",
 					TextStyle: t.N4,
 				})},
-				OnClick: func(_ *gui.Layout, _ *gui.Event, _ *gui.Window) {
+				OnClick: func(ctx gui.EventCtx) {
 					path := filepath.Join(tempDir(), id+".svg")
 					if chart.ExportSVG(chartView, 800, 600, path) == nil {
 						openFile(path)
@@ -209,7 +209,7 @@ func exportButtons(id string, chartView gui.View) gui.View {
 					Text:      "Show PNG",
 					TextStyle: t.N4,
 				})},
-				OnClick: func(_ *gui.Layout, _ *gui.Event, _ *gui.Window) {
+				OnClick: func(ctx gui.EventCtx) {
 					path := filepath.Join(tempDir(), id+".png")
 					if chart.ExportPNG(chartView, 800, 600, path) == nil {
 						openFile(path)

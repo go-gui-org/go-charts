@@ -84,79 +84,79 @@ func (xb *xyBase) generateLayout(
 	}).GenerateLayout(w)
 }
 
-func (xb *xyBase) internalScroll(l *gui.Layout, e *gui.Event, w *gui.Window) {
+func (xb *xyBase) internalScroll(ctx gui.EventCtx) {
 	if !xb.interaction.EnableZoom {
 		return
 	}
-	handleZoomScroll(w, l, e, xb.base.ID, xb.lastPA, xb.zoomX, xb.zoomY)
+	handleZoomScroll(ctx.Window, ctx.Layout, ctx.Event, xb.base.ID, xb.lastPA, xb.zoomX, xb.zoomY)
 }
 
-func (xb *xyBase) internalGesture(l *gui.Layout, e *gui.Event, w *gui.Window) {
+func (xb *xyBase) internalGesture(ctx gui.EventCtx) {
 	if !xb.interaction.EnableZoom {
 		return
 	}
-	handleZoomGesture(w, l, e, xb.base.ID, xb.lastPA, xb.zoomX, xb.zoomY)
+	handleZoomGesture(ctx.Window, ctx.Layout, ctx.Event, xb.base.ID, xb.lastPA, xb.zoomX, xb.zoomY)
 }
 
-func (xb *xyBase) internalClick(l *gui.Layout, e *gui.Event, w *gui.Window) {
-	if xb.interaction.EnableZoom && handleDoubleClickCheck(w, l, e, xb.base.ID) {
-		e.IsHandled = true
+func (xb *xyBase) internalClick(ctx gui.EventCtx) {
+	if xb.interaction.EnableZoom && handleDoubleClickCheck(ctx.Window, ctx.Layout, ctx.Event, xb.base.ID) {
+		ctx.Consume()
 		return
 	}
-	if idx := legendHitTest(xb.lastLB, e.MouseX, e.MouseY); idx >= 0 {
-		e.IsHandled = true
-		l.Shape.Version = toggleHidden(w, xb.base.ID, idx)
+	if idx := legendHitTest(xb.lastLB, ctx.Event.MouseX, ctx.Event.MouseY); idx >= 0 {
+		ctx.Consume()
+		ctx.Layout.Shape.Version = toggleHidden(ctx.Window, xb.base.ID, idx)
 		return
 	}
 	if xb.base.OnClick != nil {
-		xb.base.OnClick(l, e, w)
+		xb.base.OnClick(ctx)
 	}
 }
 
-func (xb *xyBase) internalMouseMove(l *gui.Layout, e *gui.Event, w *gui.Window) {
+func (xb *xyBase) internalMouseMove(ctx gui.EventCtx) {
 	if (xb.interaction.EnablePan || xb.interaction.EnableRangeSelect) &&
-		handleDragHover(w, l, e, xb.base.ID, xb.lastPA,
+		handleDragHover(ctx.Window, ctx.Layout, ctx.Event, xb.base.ID, xb.lastPA,
 			xb.interaction.EnablePan, xb.interaction.EnableRangeSelect,
 			xb.zoomX, xb.zoomY) {
 		return
 	}
 }
 
-func (xb *xyBase) internalMouseUp(l *gui.Layout, e *gui.Event, w *gui.Window) {
+func (xb *xyBase) internalMouseUp(ctx gui.EventCtx) {
 	if xb.interaction.EnablePan || xb.interaction.EnableRangeSelect {
-		handleDragEnd(w, l, e, xb.base.ID, xb.lastPA, xb.zoomX, xb.zoomY)
+		handleDragEnd(ctx.Window, ctx.Layout, ctx.Event, xb.base.ID, xb.lastPA, xb.zoomX, xb.zoomY)
 	}
 }
 
-func (xb *xyBase) internalHover(l *gui.Layout, e *gui.Event, w *gui.Window) {
-	if isDragging(w, xb.base.ID) {
+func (xb *xyBase) internalHover(ctx gui.EventCtx) {
+	if isDragging(ctx.Window, xb.base.ID) {
 		xb.hovering = false
-		saveHover(w, l, xb.base.ID, false, 0, 0)
+		saveHover(ctx.Window, ctx.Layout, xb.base.ID, false, 0, 0)
 		return
 	}
-	e.IsHandled = true
-	xb.hoverPx = e.MouseX - l.Shape.X
-	xb.hoverPy = e.MouseY - l.Shape.Y
+	ctx.Consume()
+	xb.hoverPx = ctx.Event.MouseX - ctx.Layout.Shape.X
+	xb.hoverPy = ctx.Event.MouseY - ctx.Layout.Shape.Y
 	xb.hovering = true
-	saveHover(w, l, xb.base.ID, true, xb.hoverPx, xb.hoverPy)
+	saveHover(ctx.Window, ctx.Layout, xb.base.ID, true, xb.hoverPx, xb.hoverPy)
 	if legendHitTest(xb.lastLB, xb.hoverPx, xb.hoverPy) >= 0 {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else if xb.nearestFn != nil && xb.nearestFn(xb.hoverPx, xb.hoverPy) {
-		w.SetMouseCursorPointingHand()
+		ctx.Window.SetMouseCursorPointingHand()
 	} else {
-		w.SetMouseCursorArrow()
+		ctx.Window.SetMouseCursorArrow()
 	}
 	if xb.base.OnHover != nil {
-		xb.base.OnHover(l, e, w)
+		xb.base.OnHover(ctx)
 	}
 }
 
-func (xb *xyBase) internalMouseLeave(l *gui.Layout, e *gui.Event, w *gui.Window) {
-	e.IsHandled = true
+func (xb *xyBase) internalMouseLeave(ctx gui.EventCtx) {
+	ctx.Consume()
 	xb.hovering = false
-	saveHover(w, l, xb.base.ID, false, 0, 0)
-	w.SetMouseCursorArrow()
+	saveHover(ctx.Window, ctx.Layout, xb.base.ID, false, 0, 0)
+	ctx.Window.SetMouseCursorArrow()
 	if xb.base.OnMouseLeave != nil {
-		xb.base.OnMouseLeave(l, e, w)
+		xb.base.OnMouseLeave(ctx)
 	}
 }
