@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Bump go-gui v0.52.0 → v0.53.0.** go-gui's nine input factories now panic on
+  an empty `Cfg.ID`: focus traversal and per-widget state are keyed by it, so a
+  control without one renders and clicks but is unreachable by keyboard. No
+  library code is affected — the one forced edit is the Export PNG button in
+  `examples/basic_line`, which now carries `ID: "export_png"`.
 - **BREAKING: event callbacks take a single `gui.EventCtx`.** Bump go-gui
   v0.51.1 → v0.52.0. Every callback that took
   `(*gui.Layout, *gui.Event, *gui.Window)` now takes `func(gui.EventCtx)`, which
