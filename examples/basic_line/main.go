@@ -84,6 +84,7 @@ func view(w *gui.Window) gui.View {
 				Spacing: gui.SomeF(8),
 				Content: []gui.View{
 					gui.Button(gui.ButtonCfg{
+						ID:      "export_png",
 						Content: []gui.View{gui.Text(gui.TextCfg{Text: "Export PNG"})},
 						OnClick: func(ctx gui.EventCtx) {
 							v := lineChart()
