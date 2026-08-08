@@ -74,11 +74,15 @@ func groupPickerItem(label, key string, app *ShowcaseApp) gui.View {
 	}
 
 	return gui.Button(gui.ButtonCfg{
-		ID:          "grp-" + key,
-		Color:       color,
-		ColorBorder: color,
-		Radius:      gui.SomeF(3),
-		Padding:     gui.SomeP(3, 6, 3, 6),
+		ID:    "grp-" + key,
+		Color: color,
+		// Border only. Not ColorSet{Base: color}, and not Flat(color):
+		// Base backs Hover/Click/Focus, so either would pin the three
+		// interactive states and stop the button reacting. Color keeps
+		// its old meaning — resting fill, states left to the theme.
+		Colors:  gui.ColorSet{Border: color},
+		Radius:  gui.SomeF(3),
+		Padding: gui.SomeP(3, 6, 3, 6),
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      label,
@@ -117,11 +121,14 @@ func themeLabel(key string) string {
 func themePicker(app *ShowcaseApp) gui.View {
 	t := gui.CurrentTheme()
 	return gui.Button(gui.ButtonCfg{
-		ID:          "theme-cycle",
-		Color:       t.ColorBackground,
-		ColorBorder: t.ColorBackground,
-		Radius:      gui.SomeF(3),
-		Padding:     gui.SomeP(3, 6, 3, 6),
+		ID:    "theme-cycle",
+		Color: t.ColorBackground,
+		// Border matches the fill so the button reads as flat at rest;
+		// hover and click still come from the theme. See groupPickerItem
+		// for why this is not Flat().
+		Colors:  gui.ColorSet{Border: t.ColorBackground},
+		Radius:  gui.SomeF(3),
+		Padding: gui.SomeP(3, 6, 3, 6),
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      "Theme: " + themeLabel(app.SelectedTheme),
@@ -212,17 +219,23 @@ func catalogRow(entry DemoEntry, app *ShowcaseApp, t gui.Theme) gui.View {
 	}
 
 	return gui.Button(gui.ButtonCfg{
-		ID:               "cat-" + entry.ID,
-		Sizing:           gui.FillFit,
-		Color:            color,
-		ColorHover:       t.MenubarStyle.ColorSelect,
-		ColorClick:       t.ColorActive,
-		ColorFocus:       color,
-		ColorBorder:      gui.ColorTransparent,
-		ColorBorderFocus: gui.ColorTransparent,
-		Radius:           gui.SomeF(4),
-		Padding:          gui.SomeP(3, 6, 3, 6),
-		HAlign:           gui.Some(gui.HAlignLeft),
+		ID:     "cat-" + entry.ID,
+		Sizing: gui.FillFit,
+		// Every interactive state is named here, so Base can carry the
+		// resting color and the Color shorthand is redundant: Base only
+		// backs states that are unset, and none are. Borders stay
+		// transparent in both states — the row is delimited by its fill.
+		Colors: gui.ColorSet{
+			Base:        color,
+			Hover:       t.MenubarStyle.ColorSelect,
+			Click:       t.ColorActive,
+			Focus:       color,
+			Border:      gui.ColorTransparent,
+			BorderFocus: gui.ColorTransparent,
+		},
+		Radius:  gui.SomeF(4),
+		Padding: gui.SomeP(3, 6, 3, 6),
+		HAlign:  gui.Some(gui.HAlignLeft),
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      entry.Label,
