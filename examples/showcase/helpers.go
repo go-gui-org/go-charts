@@ -178,7 +178,7 @@ func collectExportable(id string, v gui.View) []gui.View {
 
 func exportButtons(id string, chartView gui.View) gui.View {
 	t := gui.CurrentTheme()
-	btnPad := gui.SomeP(4, 12, 4, 12)
+	btnPad := gui.NewPadding(4, 12, 4, 12)
 
 	return gui.Row(gui.ContainerCfg{
 		Sizing:     gui.FillFit,
@@ -244,7 +244,7 @@ func line() gui.View {
 	t := gui.CurrentTheme()
 	return gui.Column(gui.ContainerCfg{
 		Sizing:     gui.FillFit,
-		Padding:    gui.SomeP(3, 0, 0, 0),
+		Padding:    gui.NewPadding(3, 0, 0, 0),
 		SizeBorder: gui.NoBorder,
 		Radius:     gui.NoRadius,
 		Content: []gui.View{

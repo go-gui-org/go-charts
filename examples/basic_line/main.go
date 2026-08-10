@@ -80,7 +80,7 @@ func view(w *gui.Window) gui.View {
 			lineChart(),
 			gui.Row(gui.ContainerCfg{
 				Sizing:  gui.FillFit,
-				Padding: gui.SomeP(8, 8, 8, 8),
+				Padding: gui.NewPadding(8, 8, 8, 8),
 				Spacing: gui.SomeF(8),
 				Content: []gui.View{
 					gui.Button(gui.ButtonCfg{
