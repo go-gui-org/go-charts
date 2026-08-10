@@ -12,7 +12,7 @@ func detailPanel(w *gui.Window, entries []DemoEntry) gui.View {
 			Scrollable: true,
 			Sizing:     gui.FillFill,
 			SizeBorder: gui.NoBorder,
-			Padding:    gui.Some(detailPadding()),
+			Padding:    detailPadding(),
 			ScrollbarCfgY: &gui.ScrollbarCfg{
 				GapEdge: 4,
 			},
@@ -35,7 +35,7 @@ func detailPanel(w *gui.Window, entries []DemoEntry) gui.View {
 		Sizing:     gui.FillFill,
 		Color:      t.ColorBackground,
 		SizeBorder: gui.NoBorder,
-		Padding:    gui.Some(detailPadding()),
+		Padding:    detailPadding(),
 		Spacing:    gui.Some(t.SpacingLarge),
 		ScrollbarCfgY: &gui.ScrollbarCfg{
 			GapEdge: 4,
@@ -162,7 +162,7 @@ func demoPlaceholder(text string) gui.View {
 	return gui.Column(gui.ContainerCfg{
 		Sizing:  gui.FillFit,
 		Color:   t.ColorPanel,
-		Padding: gui.SomeP(24, 24, 24, 24),
+		Padding: gui.NewPadding(24, 24, 24, 24),
 		Radius:  gui.SomeF(8),
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
