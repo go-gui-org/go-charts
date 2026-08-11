@@ -4,7 +4,7 @@ go 1.26.4
 
 require (
 	github.com/go-gui-org/go-glyph v1.20.0
-	github.com/go-gui-org/go-gui v0.58.0
+	github.com/go-gui-org/go-gui v0.59.0
 )
 
 require (
