@@ -77,6 +77,8 @@ func (hv *histogramView) Draw(dc *gui.DrawContext) { hv.draw(dc) }
 
 func (hv *histogramView) chartTheme() *theme.Theme { return hv.cfg.Theme }
 
+func (hv *histogramView) Content() []gui.View { return nil }
+
 func (hv *histogramView) GenerateLayout(w *gui.Window) gui.Layout {
 	return hv.generateLayout(w, hv.draw)
 }

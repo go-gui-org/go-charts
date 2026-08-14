@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
-	"slices"
 	"strings"
 
 	"github.com/go-gui-org/go-charts/chart"
@@ -109,56 +108,17 @@ var chartTypeDescriptions = map[string]string{
 		" area, and bar styles with optional markers and color bands.",
 }
 
-// demoWithCode wraps a single chart view with its source code shown
+// demoWithCode wraps a chart view with its source code shown
 // below as a markdown code block. If the demo ID maps to a
 // known chart type, an educational description is inserted
 // between the chart and the code.
-//
-// chartView must be a chart.Drawer (every single-chart demo passes a
-// chart constructor). The export buttons and the registered gallery
-// entry derive from it directly. It is the one-chart case of
-// demoWithCodeCharts.
 func demoWithCode(
 	w *gui.Window, id string, chartView gui.View, code string,
 ) gui.View {
-	return demoWithCodeCharts(w, id,
-		[]gui.View{chartView}, []gui.View{chartView}, code)
-}
-
-// demoWithCodeCharts wraps a multi-chart demo page. content is the
-// full ordered child list of the page column (charts and any widgets
-// mixed between them, e.g. a replay button); charts is the subset that
-// implement chart.Drawer, in the same order. Export buttons are
-// inserted after each chart; registerCharts stores the charts for the
-// gallery.
-func demoWithCodeCharts(
-	w *gui.Window, id string, content, charts []gui.View, code string,
-) gui.View {
-	registerCharts(id, charts)
-	views := make([]gui.View, 0, len(content)+len(charts))
-	idx := 0
-	for _, child := range content {
-		views = append(views, child)
-		if containsView(charts, child) {
-			btnID := fmt.Sprintf("%s-%d", id, idx)
-			views = append(views, exportButtons(btnID, child))
-			idx++
-		}
-	}
-	return demoPage(w, id, views, code)
-}
-
-// containsView reports whether views contains v by identity.
-func containsView(views []gui.View, v gui.View) bool {
-	return slices.Contains(views, v)
-}
-
-// demoPage assembles the shared page chrome around views: the
-// educational description (if the demo ID maps to a known chart type),
-// a divider, and the source code block.
-func demoPage(w *gui.Window, id string, views []gui.View, code string) gui.View {
 	t := gui.CurrentTheme()
 	source := "```go\n" + code + "\n```"
+
+	views := collectExportable(id, chartView)
 
 	if prefix, _, ok := strings.Cut(id, "-"); ok {
 		if desc, found := chartTypeDescriptions[prefix]; found {
@@ -190,6 +150,30 @@ func demoPage(w *gui.Window, id string, views []gui.View, code string) gui.View 
 		Spacing: gui.SomeF(12),
 		Content: views,
 	})
+}
+
+// collectExportable returns the chart view followed by export
+// buttons. If the view is a container (not a Drawer), it walks
+// Content() children and adds export buttons after each chart.
+func collectExportable(id string, v gui.View) []gui.View {
+	if _, ok := v.(chart.Drawer); ok {
+		return []gui.View{v, exportButtons(id, v)}
+	}
+	children := v.Content()
+	if len(children) == 0 {
+		return []gui.View{v}
+	}
+	views := make([]gui.View, 0, len(children)*2)
+	idx := 0
+	for _, child := range children {
+		views = append(views, child)
+		if _, ok := child.(chart.Drawer); ok {
+			btnID := fmt.Sprintf("%s-%d", id, idx)
+			views = append(views, exportButtons(btnID, child))
+			idx++
+		}
+	}
+	return views
 }
 
 func exportButtons(id string, chartView gui.View) gui.View {

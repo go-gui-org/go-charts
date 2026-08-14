@@ -146,6 +146,8 @@ func (sv *sparklineView) chartTheme() *theme.Theme {
 	return sv.cfg.Theme
 }
 
+func (sv *sparklineView) Content() []gui.View { return nil }
+
 func (sv *sparklineView) GenerateLayout(
 	w *gui.Window,
 ) gui.Layout {

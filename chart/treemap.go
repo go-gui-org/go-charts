@@ -80,6 +80,8 @@ func (tv *treemapView) Draw(dc *gui.DrawContext) { tv.draw(dc) }
 
 func (tv *treemapView) chartTheme() *theme.Theme { return tv.cfg.Theme }
 
+func (tv *treemapView) Content() []gui.View { return nil }
+
 func (tv *treemapView) GenerateLayout(w *gui.Window) gui.Layout {
 	c := &tv.cfg
 	hovV := loadHover(w, c.ID,

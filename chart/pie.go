@@ -60,6 +60,8 @@ func (pv *pieView) Draw(dc *gui.DrawContext) { pv.draw(dc) }
 
 func (pv *pieView) chartTheme() *theme.Theme { return pv.cfg.Theme }
 
+func (pv *pieView) Content() []gui.View { return nil }
+
 func (pv *pieView) GenerateLayout(w *gui.Window) gui.Layout {
 	c := &pv.cfg
 	hv := loadHover(w, c.ID,

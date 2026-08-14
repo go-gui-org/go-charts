@@ -81,6 +81,8 @@ func (bv *barView) Draw(dc *gui.DrawContext) { bv.draw(dc) }
 
 func (bv *barView) chartTheme() *theme.Theme { return bv.cfg.Theme }
 
+func (bv *barView) Content() []gui.View { return nil }
+
 func (bv *barView) GenerateLayout(w *gui.Window) gui.Layout {
 	return bv.generateLayout(w, bv.draw)
 }

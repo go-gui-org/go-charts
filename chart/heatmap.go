@@ -76,6 +76,8 @@ func (hv *heatmapView) Draw(dc *gui.DrawContext) { hv.draw(dc) }
 
 func (hv *heatmapView) chartTheme() *theme.Theme { return hv.cfg.Theme }
 
+func (hv *heatmapView) Content() []gui.View { return nil }
+
 func (hv *heatmapView) GenerateLayout(w *gui.Window) gui.Layout {
 	c := &hv.cfg
 	hovV := loadHover(w, c.ID,

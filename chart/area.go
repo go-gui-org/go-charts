@@ -92,6 +92,8 @@ func (av *areaView) Draw(dc *gui.DrawContext) { av.draw(dc) }
 
 func (av *areaView) chartTheme() *theme.Theme { return av.cfg.Theme }
 
+func (av *areaView) Content() []gui.View { return nil }
+
 func (av *areaView) GenerateLayout(w *gui.Window) gui.Layout {
 	return av.generateLayout(w, av.draw)
 }

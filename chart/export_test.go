@@ -18,6 +18,7 @@ import (
 // Drawer, used to test ExportPNG rejection.
 type nonChartView struct{}
 
+func (nonChartView) Content() []gui.View                     { return nil }
 func (nonChartView) GenerateLayout(_ *gui.Window) gui.Layout { return gui.Layout{} }
 
 func TestExportPNG_Line(t *testing.T) {
