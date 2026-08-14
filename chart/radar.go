@@ -84,8 +84,6 @@ func (rv *radarView) Draw(dc *gui.DrawContext) { rv.draw(dc) }
 
 func (rv *radarView) chartTheme() *theme.Theme { return rv.cfg.Theme }
 
-func (rv *radarView) Content() []gui.View { return nil }
-
 func (rv *radarView) GenerateLayout(w *gui.Window) gui.Layout {
 	c := &rv.cfg
 	hv := loadHover(w, c.ID,

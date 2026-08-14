@@ -48,16 +48,13 @@ func demoPaletteSwap(w *gui.Window) gui.View {
 		})
 	}
 
-	return demoWithCode(w, "style-palette", gui.Column(gui.ContainerCfg{
-		Sizing:  gui.FillFit,
-		Padding: gui.NoPadding,
-		Spacing: gui.SomeF(16),
-		Content: []gui.View{
-			makeChart("palette-tableau", "Tableau 10 (Default)", theme.Tableau10()),
-			makeChart("palette-pastel", "Pastel", theme.Pastel()),
-			makeChart("palette-vivid", "Vivid", theme.Vivid()),
-		},
-	}), `t := theme.Default()
+	charts := []gui.View{
+		makeChart("palette-tableau", "Tableau 10 (Default)", theme.Tableau10()),
+		makeChart("palette-pastel", "Pastel", theme.Pastel()),
+		makeChart("palette-vivid", "Vivid", theme.Vivid()),
+	}
+
+	return demoWithCodeCharts(w, "style-palette", charts, charts, `t := theme.Default()
 t.Palette = theme.Pastel() // or Vivid(), Tableau10()
 
 chart.Line(chart.LineCfg{
@@ -136,12 +133,7 @@ func demoLegendPositions(w *gui.Window) gui.View {
 		})
 	}
 
-	return demoWithCode(w, "style-legend-pos", gui.Column(gui.ContainerCfg{
-		Sizing:  gui.FillFit,
-		Padding: gui.NoPadding,
-		Spacing: gui.SomeF(16),
-		Content: charts,
-	}), `pos := theme.LegendTop // or LegendBottom, LegendRight, LegendNone
+	return demoWithCodeCharts(w, "style-legend-pos", charts, charts, `pos := theme.LegendTop // or LegendBottom, LegendRight, LegendNone
 
 chart.Line(chart.LineCfg{
     BaseCfg: chart.BaseCfg{
@@ -250,35 +242,32 @@ func demoCustomPadding(w *gui.Window) gui.View {
 	spacious.PaddingBottom = 80
 	spacious.PaddingLeft = 80
 
-	return demoWithCode(w, "style-padding", gui.Column(gui.ContainerCfg{
-		Sizing:  gui.FillFit,
-		Padding: gui.NoPadding,
-		Spacing: gui.SomeF(16),
-		Content: []gui.View{
-			chart.Line(chart.LineCfg{
-				BaseCfg: chart.BaseCfg{
-					ID:             "padding-tight",
-					Title:          "Tight Padding",
-					Sizing:         gui.FillFixed,
-					Height:         250,
-					Theme:          spacious,
-					LegendPosition: &posBottom,
-				},
-				Series: styleSeries(),
-			}),
-			chart.Line(chart.LineCfg{
-				BaseCfg: chart.BaseCfg{
-					ID:             "padding-spacious",
-					Title:          "Spacious Padding",
-					Sizing:         gui.FillFixed,
-					Height:         250,
-					Theme:          tight,
-					LegendPosition: &posBottom,
-				},
-				Series: styleSeries(),
-			}),
-		},
-	}), `tight := theme.Default()
+	charts := []gui.View{
+		chart.Line(chart.LineCfg{
+			BaseCfg: chart.BaseCfg{
+				ID:             "padding-tight",
+				Title:          "Tight Padding",
+				Sizing:         gui.FillFixed,
+				Height:         250,
+				Theme:          spacious,
+				LegendPosition: &posBottom,
+			},
+			Series: styleSeries(),
+		}),
+		chart.Line(chart.LineCfg{
+			BaseCfg: chart.BaseCfg{
+				ID:             "padding-spacious",
+				Title:          "Spacious Padding",
+				Sizing:         gui.FillFixed,
+				Height:         250,
+				Theme:          tight,
+				LegendPosition: &posBottom,
+			},
+			Series: styleSeries(),
+		}),
+	}
+
+	return demoWithCodeCharts(w, "style-padding", charts, charts, `tight := theme.Default()
 tight.PaddingTop = 20
 tight.PaddingRight = 15
 tight.PaddingBottom = 30
@@ -420,37 +409,34 @@ func demoHighContrast(w *gui.Window) gui.View {
 		}),
 	}
 
-	return demoWithCode(w, "style-high-contrast", gui.Column(gui.ContainerCfg{
-		Sizing:  gui.FillFit,
-		Padding: gui.NoPadding,
-		Spacing: gui.SomeF(16),
-		Content: []gui.View{
-			chart.Line(chart.LineCfg{
-				BaseCfg: chart.BaseCfg{
-					ID:             "hc-line",
-					Title:          "High Contrast Line",
-					Sizing:         gui.FillFixed,
-					Height:         250,
-					Theme:          t,
-					LegendPosition: &posBottom,
-				},
-				ShowMarkers: true,
-				LineWidth:   2.5,
-				Series:      styleSeries(),
-			}),
-			chart.Bar(chart.BarCfg{
-				BaseCfg: chart.BaseCfg{
-					ID:             "hc-bar",
-					Title:          "High Contrast Bar",
-					Sizing:         gui.FillFixed,
-					Height:         250,
-					Theme:          t,
-					LegendPosition: &posBottom,
-				},
-				Series: barData,
-			}),
-		},
-	}), `t := theme.HighContrastTheme()
+	charts := []gui.View{
+		chart.Line(chart.LineCfg{
+			BaseCfg: chart.BaseCfg{
+				ID:             "hc-line",
+				Title:          "High Contrast Line",
+				Sizing:         gui.FillFixed,
+				Height:         250,
+				Theme:          t,
+				LegendPosition: &posBottom,
+			},
+			ShowMarkers: true,
+			LineWidth:   2.5,
+			Series:      styleSeries(),
+		}),
+		chart.Bar(chart.BarCfg{
+			BaseCfg: chart.BaseCfg{
+				ID:             "hc-bar",
+				Title:          "High Contrast Bar",
+				Sizing:         gui.FillFixed,
+				Height:         250,
+				Theme:          t,
+				LegendPosition: &posBottom,
+			},
+			Series: barData,
+		}),
+	}
+
+	return demoWithCodeCharts(w, "style-high-contrast", charts, charts, `t := theme.HighContrastTheme()
 
 chart.Line(chart.LineCfg{
     BaseCfg: chart.BaseCfg{
@@ -479,73 +465,70 @@ func demoZoomPan(w *gui.Window) gui.View {
 		EnableRangeSelect: true,
 	}
 
-	return demoWithCode(w, "style-zoom", gui.Column(gui.ContainerCfg{
-		Sizing:  gui.FillFit,
-		Padding: gui.NoPadding,
-		Spacing: gui.SomeF(16),
-		Content: []gui.View{
-			chart.Line(chart.LineCfg{
-				BaseCfg:        zoomBase("zoom-line", "Line — Zoom & Pan"),
-				InteractionCfg: zoomInteraction,
-				ShowMarkers:    true,
-				Series:         styleSeries(),
-			}),
-			chart.Area(chart.AreaCfg{
-				BaseCfg:        zoomBase("zoom-area", "Area — Zoom & Pan"),
-				InteractionCfg: zoomInteraction,
-				Series:         styleSeries(),
-			}),
-			chart.Bar(chart.BarCfg{
-				BaseCfg:        zoomBase("zoom-bar", "Bar — Zoom & Pan"),
-				InteractionCfg: zoomInteraction,
-				Series: []series.Category{
-					series.NewCategory(series.CategoryCfg{
-						Name: "Q1",
-						Values: []series.CategoryValue{
-							{Label: "North", Value: 45},
-							{Label: "South", Value: 32},
-							{Label: "East", Value: 58},
-							{Label: "West", Value: 41},
-						},
-					}),
-					series.NewCategory(series.CategoryCfg{
-						Name: "Q2",
-						Values: []series.CategoryValue{
-							{Label: "North", Value: 52},
-							{Label: "South", Value: 38},
-							{Label: "East", Value: 49},
-							{Label: "West", Value: 55},
-						},
-					}),
-				},
-			}),
-			chart.Scatter(chart.ScatterCfg{
-				BaseCfg:        zoomBase("zoom-scatter", "Scatter — Zoom & Pan"),
-				InteractionCfg: zoomInteraction,
-				Series: []series.XY{
-					series.NewXY(series.XYCfg{
-						Name: "Subjects",
-						Points: []series.Point{
-							{X: 155, Y: 52}, {X: 160, Y: 58},
-							{X: 162, Y: 55}, {X: 165, Y: 62},
-							{X: 167, Y: 60}, {X: 168, Y: 65},
-							{X: 170, Y: 68}, {X: 172, Y: 70},
-							{X: 173, Y: 66}, {X: 175, Y: 75},
-							{X: 176, Y: 72}, {X: 178, Y: 78},
-							{X: 180, Y: 80}, {X: 181, Y: 76},
-							{X: 183, Y: 85}, {X: 185, Y: 82},
-							{X: 187, Y: 88}, {X: 190, Y: 92},
-						},
-					}),
-				},
-			}),
-			chart.Histogram(chart.HistogramCfg{
-				BaseCfg:        zoomBase("zoom-hist", "Histogram — Zoom & Pan"),
-				InteractionCfg: zoomInteraction,
-				Data:           histData,
-			}),
-		},
-	}), `// All XY chart types support zoom, pan, and range-select.
+	charts := []gui.View{
+		chart.Line(chart.LineCfg{
+			BaseCfg:        zoomBase("zoom-line", "Line — Zoom & Pan"),
+			InteractionCfg: zoomInteraction,
+			ShowMarkers:    true,
+			Series:         styleSeries(),
+		}),
+		chart.Area(chart.AreaCfg{
+			BaseCfg:        zoomBase("zoom-area", "Area — Zoom & Pan"),
+			InteractionCfg: zoomInteraction,
+			Series:         styleSeries(),
+		}),
+		chart.Bar(chart.BarCfg{
+			BaseCfg:        zoomBase("zoom-bar", "Bar — Zoom & Pan"),
+			InteractionCfg: zoomInteraction,
+			Series: []series.Category{
+				series.NewCategory(series.CategoryCfg{
+					Name: "Q1",
+					Values: []series.CategoryValue{
+						{Label: "North", Value: 45},
+						{Label: "South", Value: 32},
+						{Label: "East", Value: 58},
+						{Label: "West", Value: 41},
+					},
+				}),
+				series.NewCategory(series.CategoryCfg{
+					Name: "Q2",
+					Values: []series.CategoryValue{
+						{Label: "North", Value: 52},
+						{Label: "South", Value: 38},
+						{Label: "East", Value: 49},
+						{Label: "West", Value: 55},
+					},
+				}),
+			},
+		}),
+		chart.Scatter(chart.ScatterCfg{
+			BaseCfg:        zoomBase("zoom-scatter", "Scatter — Zoom & Pan"),
+			InteractionCfg: zoomInteraction,
+			Series: []series.XY{
+				series.NewXY(series.XYCfg{
+					Name: "Subjects",
+					Points: []series.Point{
+						{X: 155, Y: 52}, {X: 160, Y: 58},
+						{X: 162, Y: 55}, {X: 165, Y: 62},
+						{X: 167, Y: 60}, {X: 168, Y: 65},
+						{X: 170, Y: 68}, {X: 172, Y: 70},
+						{X: 173, Y: 66}, {X: 175, Y: 75},
+						{X: 176, Y: 72}, {X: 178, Y: 78},
+						{X: 180, Y: 80}, {X: 181, Y: 76},
+						{X: 183, Y: 85}, {X: 185, Y: 82},
+						{X: 187, Y: 88}, {X: 190, Y: 92},
+					},
+				}),
+			},
+		}),
+		chart.Histogram(chart.HistogramCfg{
+			BaseCfg:        zoomBase("zoom-hist", "Histogram — Zoom & Pan"),
+			InteractionCfg: zoomInteraction,
+			Data:           histData,
+		}),
+	}
+
+	return demoWithCodeCharts(w, "style-zoom", charts, charts, `// All XY chart types support zoom, pan, and range-select.
 // Set EnableZoom, EnablePan, EnableRangeSelect in InteractionCfg.
 
 chart.Line(chart.LineCfg{
