@@ -126,8 +126,6 @@ func (gv *gaugeView) Draw(dc *gui.DrawContext) { gv.draw(dc) }
 
 func (gv *gaugeView) chartTheme() *theme.Theme { return gv.cfg.Theme }
 
-func (gv *gaugeView) Content() []gui.View { return nil }
-
 func (gv *gaugeView) GenerateLayout(w *gui.Window) gui.Layout {
 	c := &gv.cfg
 	hv := loadHover(w, c.ID,

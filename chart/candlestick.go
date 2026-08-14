@@ -90,8 +90,6 @@ func (cv *candlestickView) Draw(dc *gui.DrawContext) { cv.draw(dc) }
 
 func (cv *candlestickView) chartTheme() *theme.Theme { return cv.cfg.Theme }
 
-func (cv *candlestickView) Content() []gui.View { return nil }
-
 func (cv *candlestickView) GenerateLayout(w *gui.Window) gui.Layout {
 	return cv.generateLayout(w, cv.draw)
 }

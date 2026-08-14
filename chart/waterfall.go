@@ -117,8 +117,6 @@ func (wv *waterfallView) Draw(dc *gui.DrawContext) { wv.draw(dc) }
 
 func (wv *waterfallView) chartTheme() *theme.Theme { return wv.cfg.Theme }
 
-func (wv *waterfallView) Content() []gui.View { return nil }
-
 func (wv *waterfallView) GenerateLayout(w *gui.Window) gui.Layout {
 	return wv.generateLayout(w, wv.draw)
 }

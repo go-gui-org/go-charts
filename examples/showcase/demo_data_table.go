@@ -36,75 +36,79 @@ func demoDataTable(w *gui.Window) gui.View {
 		{Label: "Tablet", Value: 10},
 	}
 
-	return demoWithCode(w, "style-data-table", gui.Column(gui.ContainerCfg{
-		Sizing:  gui.FillFit,
-		Padding: gui.NoPadding,
-		Spacing: gui.SomeF(16),
-		Content: []gui.View{
-			chart.Line(chart.LineCfg{
-				BaseCfg: chart.BaseCfg{
-					ID:             "dt-line-chart",
-					Title:          "Product Sales",
-					Sizing:         gui.FillFixed,
-					Height:         200,
-					LegendPosition: &posBottom,
-				},
-				ShowMarkers: true,
-				Series:      lineData,
-			}),
-			chart.Line(chart.LineCfg{
-				BaseCfg: chart.BaseCfg{
-					ID:            "dt-line-table",
-					Title:         "Product Sales",
-					Sizing:        gui.FillFixed,
-					Height:        200,
-					ShowDataTable: true,
-				},
-				Series: lineData,
-			}),
-			chart.Bar(chart.BarCfg{
-				BaseCfg: chart.BaseCfg{
-					ID:             "dt-bar-chart",
-					Title:          "Regional Sales",
-					Sizing:         gui.FillFixed,
-					Height:         200,
-					LegendPosition: &posBottom,
-				},
-				Series: barData,
-			}),
-			chart.Bar(chart.BarCfg{
-				BaseCfg: chart.BaseCfg{
-					ID:            "dt-bar-table",
-					Title:         "Regional Sales",
-					Sizing:        gui.FillFixed,
-					Height:        200,
-					ShowDataTable: true,
-				},
-				Series: barData,
-			}),
-			chart.Pie(chart.PieCfg{
-				BaseCfg: chart.BaseCfg{
-					ID:             "dt-pie-chart",
-					Title:          "Device Share",
-					Sizing:         gui.FillFixed,
-					Height:         200,
-					LegendPosition: &posBottom,
-				},
-				ShowPercent: true,
-				Slices:      pieSlices,
-			}),
-			chart.Pie(chart.PieCfg{
-				BaseCfg: chart.BaseCfg{
-					ID:            "dt-pie-table",
-					Title:         "Device Share",
-					Sizing:        gui.FillFixed,
-					Height:        200,
-					ShowDataTable: true,
-				},
-				Slices: pieSlices,
-			}),
+	lineChart := chart.Line(chart.LineCfg{
+		BaseCfg: chart.BaseCfg{
+			ID:             "dt-line-chart",
+			Title:          "Product Sales",
+			Sizing:         gui.FillFixed,
+			Height:         200,
+			LegendPosition: &posBottom,
 		},
-	}), `// Set ShowDataTable: true to render as a table.
+		ShowMarkers: true,
+		Series:      lineData,
+	})
+	barChart := chart.Bar(chart.BarCfg{
+		BaseCfg: chart.BaseCfg{
+			ID:             "dt-bar-chart",
+			Title:          "Regional Sales",
+			Sizing:         gui.FillFixed,
+			Height:         200,
+			LegendPosition: &posBottom,
+		},
+		Series: barData,
+	})
+	pieChart := chart.Pie(chart.PieCfg{
+		BaseCfg: chart.BaseCfg{
+			ID:             "dt-pie-chart",
+			Title:          "Device Share",
+			Sizing:         gui.FillFixed,
+			Height:         200,
+			LegendPosition: &posBottom,
+		},
+		ShowPercent: true,
+		Slices:      pieSlices,
+	})
+
+	// The ShowDataTable variants resolve to dataTableXY, which is not
+	// a Drawer: they get no export buttons and are not exportable.
+	content := []gui.View{
+		lineChart,
+		chart.Line(chart.LineCfg{
+			BaseCfg: chart.BaseCfg{
+				ID:            "dt-line-table",
+				Title:         "Product Sales",
+				Sizing:        gui.FillFixed,
+				Height:        200,
+				ShowDataTable: true,
+			},
+			Series: lineData,
+		}),
+		barChart,
+		chart.Bar(chart.BarCfg{
+			BaseCfg: chart.BaseCfg{
+				ID:            "dt-bar-table",
+				Title:         "Regional Sales",
+				Sizing:        gui.FillFixed,
+				Height:        200,
+				ShowDataTable: true,
+			},
+			Series: barData,
+		}),
+		pieChart,
+		chart.Pie(chart.PieCfg{
+			BaseCfg: chart.BaseCfg{
+				ID:            "dt-pie-table",
+				Title:         "Device Share",
+				Sizing:        gui.FillFixed,
+				Height:        200,
+				ShowDataTable: true,
+			},
+			Slices: pieSlices,
+		}),
+	}
+
+	return demoWithCodeCharts(w, "style-data-table", content,
+		[]gui.View{lineChart, barChart, pieChart}, `// Set ShowDataTable: true to render as a table.
 chart.Line(chart.LineCfg{
     BaseCfg: chart.BaseCfg{
         Title:         "Product Sales",

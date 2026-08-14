@@ -82,8 +82,6 @@ func (bv *bubbleView) Draw(dc *gui.DrawContext) { bv.draw(dc) }
 
 func (bv *bubbleView) chartTheme() *theme.Theme { return bv.cfg.Theme }
 
-func (bv *bubbleView) Content() []gui.View { return nil }
-
 func (bv *bubbleView) GenerateLayout(w *gui.Window) gui.Layout {
 	return bv.generateLayout(w, bv.draw)
 }

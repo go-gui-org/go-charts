@@ -88,8 +88,6 @@ func (sv *scatterView) Draw(dc *gui.DrawContext) { sv.draw(dc) }
 
 func (sv *scatterView) chartTheme() *theme.Theme { return sv.cfg.Theme }
 
-func (sv *scatterView) Content() []gui.View { return nil }
-
 func (sv *scatterView) GenerateLayout(w *gui.Window) gui.Layout {
 	return sv.generateLayout(w, sv.draw)
 }

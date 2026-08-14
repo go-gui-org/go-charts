@@ -84,8 +84,6 @@ func (bv *boxplotView) Draw(dc *gui.DrawContext) { bv.draw(dc) }
 
 func (bv *boxplotView) chartTheme() *theme.Theme { return bv.cfg.Theme }
 
-func (bv *boxplotView) Content() []gui.View { return nil }
-
 func (bv *boxplotView) GenerateLayout(w *gui.Window) gui.Layout {
 	return bv.generateLayout(w, bv.draw)
 }
