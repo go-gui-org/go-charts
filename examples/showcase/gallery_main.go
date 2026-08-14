@@ -13,6 +13,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/go-gui-org/go-charts/chart"
 	"github.com/go-gui-org/go-gui/gui"
@@ -102,9 +103,16 @@ nav a{display:inline-block;margin:0 8px 4px 0;font-size:13px}
 	log.Printf("index: %s", idxPath)
 }
 
-// renderEntry resolves a demo by ID, walks its view tree for chart.Drawer
-// instances, and exports each as a PNG. Panics in any single demo are
-// recovered so one bad demo cannot abort the run.
+// galleryID converts a DemoEntry.ID (underscores) to the id form the
+// demos pass to demoWithCode and demoWithCodeCharts (hyphens).
+func galleryID(id string) string {
+	return strings.ReplaceAll(id, "_", "-")
+}
+
+// renderEntry resolves a demo by ID, exports every chart the demo
+// registered via demoWithCode/demoWithCodeCharts, and writes one PNG
+// per chart. Panics in any single demo are recovered so one bad demo
+// cannot abort the run.
 func renderEntry(w *gui.Window, e DemoEntry, width, height int, outDir string) (files []string) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -113,8 +121,12 @@ func renderEntry(w *gui.Window, e DemoEntry, width, height int, outDir string) (
 		}
 	}()
 
-	v := componentDemo(w, e.ID)
-	charts := findCharts(v)
+	// The demo must run: demoWithCode registers its charts in
+	// demoCharts as a side effect of building the view. Demos key
+	// the registry by their hyphenated id (as passed to
+	// demoWithCode), so translate the underscore form of DemoEntry.ID.
+	_ = componentDemo(w, e.ID)
+	charts := demoCharts[galleryID(e.ID)]
 	for i, c := range charts {
 		name := e.ID + ".png"
 		if len(charts) > 1 {
@@ -131,37 +143,4 @@ func renderEntry(w *gui.Window, e DemoEntry, width, height int, outDir string) (
 		log.Printf("skip %s: no chart.Drawer found", e.ID)
 	}
 	return files
-}
-
-// findCharts walks a view tree and returns every chart.Drawer it contains,
-// in document order. Avoids descending into export-button rows by skipping
-// any view whose Content includes a chart.Drawer ancestor already collected.
-func findCharts(v gui.View) []gui.View {
-	var out []gui.View
-	var walk func(gui.View)
-	walk = func(v gui.View) {
-		if v == nil {
-			return
-		}
-		if _, ok := v.(chart.Drawer); ok {
-			out = append(out, v)
-			return
-		}
-		for _, c := range v.Content() {
-			walk(c)
-		}
-	}
-	walk(v)
-	// Deduplicate while preserving order in case the same chart appears
-	// twice (chart + export button referencing same view).
-	seen := map[gui.View]bool{}
-	uniq := out[:0]
-	for _, c := range out {
-		if seen[c] {
-			continue
-		}
-		seen[c] = true
-		uniq = append(uniq, c)
-	}
-	return uniq
 }

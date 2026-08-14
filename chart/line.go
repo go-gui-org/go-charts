@@ -89,8 +89,6 @@ func (lv *lineView) Draw(dc *gui.DrawContext) { lv.draw(dc) }
 
 func (lv *lineView) chartTheme() *theme.Theme { return lv.cfg.Theme }
 
-func (lv *lineView) Content() []gui.View { return nil }
-
 func (lv *lineView) GenerateLayout(w *gui.Window) gui.Layout {
 	return lv.generateLayout(w, lv.draw)
 }

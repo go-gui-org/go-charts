@@ -115,17 +115,9 @@ func demoAnimEntry(w *gui.Window) gui.View {
 		},
 	})
 
-	return demoWithCode(w, "anim-entry",
-		gui.Column(gui.ContainerCfg{
-			Sizing:  gui.FillFit,
-			Spacing: gui.SomeF(12),
-			Content: []gui.View{
-				replay,
-				lineChart,
-				barChart,
-				pieChart,
-			},
-		}),
+	return demoWithCodeCharts(w, "anim-entry",
+		[]gui.View{replay, lineChart, barChart, pieChart},
+		[]gui.View{lineChart, barChart, pieChart},
 		`chart.Line(chart.LineCfg{
     BaseCfg: chart.BaseCfg{
         Animate: true,
@@ -178,32 +170,28 @@ func demoAnimTransition(w *gui.Window) gui.View {
 		},
 	})
 
-	return demoWithCode(w, "anim-transition",
-		gui.Column(gui.ContainerCfg{
-			Sizing:  gui.FillFit,
-			Spacing: gui.SomeF(12),
-			Content: []gui.View{
-				toggle,
-				chart.Line(chart.LineCfg{
-					BaseCfg: chart.BaseCfg{
-						ID:      "anim-transition",
-						Title:   "Data Transition",
-						Sizing:  gui.FillFixed,
-						Height:  300,
-						Version: ts.Version,
-					},
-					InteractionCfg: chart.InteractionCfg{
-						AnimateTransitions: true,
-					},
-					Series: []series.XY{
-						series.NewXY(series.XYCfg{
-							Name: "Value", Points: pts,
-						}),
-					},
-					ShowMarkers: true,
-				}),
-			},
-		}),
+	lineChart := chart.Line(chart.LineCfg{
+		BaseCfg: chart.BaseCfg{
+			ID:      "anim-transition",
+			Title:   "Data Transition",
+			Sizing:  gui.FillFixed,
+			Height:  300,
+			Version: ts.Version,
+		},
+		InteractionCfg: chart.InteractionCfg{
+			AnimateTransitions: true,
+		},
+		Series: []series.XY{
+			series.NewXY(series.XYCfg{
+				Name: "Value", Points: pts,
+			}),
+		},
+		ShowMarkers: true,
+	})
+
+	return demoWithCodeCharts(w, "anim-transition",
+		[]gui.View{toggle, lineChart},
+		[]gui.View{lineChart},
 		`chart.Line(chart.LineCfg{
     BaseCfg: chart.BaseCfg{
         Version: dataVersion,

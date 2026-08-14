@@ -76,8 +76,6 @@ func (fv *funnelView) Draw(dc *gui.DrawContext) { fv.draw(dc) }
 
 func (fv *funnelView) chartTheme() *theme.Theme { return fv.cfg.Theme }
 
-func (fv *funnelView) Content() []gui.View { return nil }
-
 func (fv *funnelView) GenerateLayout(w *gui.Window) gui.Layout {
 	c := &fv.cfg
 	hovV := loadHover(w, c.ID,

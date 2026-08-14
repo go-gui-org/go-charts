@@ -37,8 +37,6 @@ func (cv *chartView) Draw(dc *gui.DrawContext) { cv.draw(dc) }
 
 func (cv *chartView) chartTheme() *theme.Theme { return cv.cfg.Theme }
 
-func (cv *chartView) Content() []gui.View { return nil }
-
 func (cv *chartView) GenerateLayout(w *gui.Window) gui.Layout {
 	c := &cv.cfg
 	width, height := resolveSize(c.Width, c.Height, w)
