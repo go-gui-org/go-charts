@@ -11,6 +11,12 @@ LINT_VERSION := v2.12.2
 # A workspace build would answer a different question.
 GO := GOWORK=off go
 
+# golangci-lint is its own binary, so $(GO) does not cover it — but it
+# honours go.work the same way the toolchain does. Without GOWORK=off it
+# type-checks against the ../go-gui working copy and reports breakage that
+# CI, which builds the pinned versions, will never see.
+LINT := GOWORK=off golangci-lint
+
 # Run the test suite. Mirrors CI's `go test ./...` step.
 test:
 	$(GO) test ./...
@@ -31,7 +37,7 @@ lint-pin:
 	  { echo "::error::golangci-lint $(LINT_VERSION) required. Run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(LINT_VERSION)"; exit 1; }
 
 lint: lint-pin
-	golangci-lint run ./...
+	$(LINT) run ./...
 
 build:
 	$(GO) build ./...
