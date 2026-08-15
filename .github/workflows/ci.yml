@@ -73,4 +73,7 @@ jobs:
 
       - uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.11.4
+          # Kept equal to the Makefile's LINT_VERSION, which `make lint-pin`
+          # enforces locally, so a local lint pass and a CI lint pass mean
+          # the same thing. Matches go-glyph and go-term.
+          version: v2.12.2
