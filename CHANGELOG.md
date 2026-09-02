@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+## v0.6.0 - 2026-09-02
+
+- **The module path is now `github.com/go-gui-org/go-charts`.** This is the
+  first tag under the new path. Tag v0.5.8 and earlier declare
+  `github.com/mike-ward/go-charts`, so a consumer that wants a tagged build must
+  move to v0.6.0. Change the import paths, then run `go mod tidy`.
+- **Bump go-gui v0.53.0 -> v0.66.1 and go-glyph -> v1.24.0.** This covers the
+  per-scope effective IDs, the `ColorSet` per-state colors, the `Padding` and
+  `Sizing` self-flag change, the single-method `View` interface, and the
+  window-owned theme. The notes below describe the earlier steps of the same
+  migration.
+- `make prepush` runs the full local gate: race tests, lint, cross-compile, and
+  the export audit.
+- The showcase example records its charts at build time. It no longer walks
+  `View` trees at render time.
+- Structural lines use `DrawContext.Scale`, so a hairline is one physical pixel
+  on a HiDPI display.
 - **Bump go-gui v0.52.0 → v0.53.0.** go-gui's nine input factories now panic on
   an empty `Cfg.ID`: focus traversal and per-widget state are keyed by it, so a
   control without one renders and clicks but is unreachable by keyboard. No
