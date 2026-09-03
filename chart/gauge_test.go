@@ -2,6 +2,7 @@ package chart
 
 import (
 	"math"
+	"path/filepath"
 	"testing"
 
 	"github.com/go-gui-org/go-gui/gui"
@@ -122,6 +123,40 @@ func TestGaugeCfgValidate(t *testing.T) {
 				},
 			},
 			wantErr: true,
+		},
+		{
+			name: "value offset not finite",
+			cfg: GaugeCfg{
+				Value:            50,
+				ValueOffsetRatio: float32(math.NaN()),
+			},
+			wantErr: true,
+		},
+		{
+			name: "value offset out of range",
+			cfg: GaugeCfg{
+				Value:            50,
+				ValueOffsetRatio: 99,
+			},
+			wantErr: true,
+		},
+		{
+			name: "value anchor unknown",
+			cfg: GaugeCfg{
+				Value:       50,
+				ValueAnchor: GaugeValueBelowArc + 1,
+			},
+			wantErr: true,
+		},
+		{
+			name: "valid anchor with negative offset",
+			cfg: GaugeCfg{
+				Value:            50,
+				ValueAnchor:      GaugeValueCentre,
+				ValueOffsetRatio: -0.2,
+				ValueLabel:       "Mbps",
+			},
+			wantErr: false,
 		},
 	}
 
@@ -266,5 +301,136 @@ func TestLabelCentrePlacesNearEdge(t *testing.T) {
 	bottom := y + fh/2
 	if math.Abs(float64(bottom-(cy-r))) > 1e-5 {
 		t.Errorf("top label bottom edge %v, want %v", bottom, cy-r)
+	}
+}
+
+func TestGaugeValueBaseY(t *testing.T) {
+	const cy, innerR, outerR = 100, 40, 80
+	tests := []struct {
+		name   string
+		anchor GaugeValueAnchor
+		want   float32
+	}{
+		{"default drops below centre", GaugeValueDefault,
+			cy + innerR*DefaultGaugeValueDropRatio},
+		{"centre", GaugeValueCentre, cy},
+		{"above centre", GaugeValueAboveCentre,
+			cy - innerR*DefaultGaugeValueDropRatio},
+		{"below arc", GaugeValueBelowArc,
+			cy + outerR + DefaultGaugeValueBelowArcGapPx},
+		{"unknown falls back to default", GaugeValueBelowArc + 7,
+			cy + innerR*DefaultGaugeValueDropRatio},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := gaugeValueBaseY(tt.anchor, cy, innerR, outerR)
+			if math.Abs(float64(got-tt.want)) > 1e-4 {
+				t.Errorf("gaugeValueBaseY = %g, want %g", got, tt.want)
+			}
+		})
+	}
+
+	// No hole: the outer radius stands in for the hole radius.
+	got := gaugeValueBaseY(GaugeValueDefault, cy, 0, outerR)
+	want := float32(cy + outerR*DefaultGaugeValueDropRatio)
+	if math.Abs(float64(got-want)) > 1e-4 {
+		t.Errorf("no-hole base = %g, want %g", got, want)
+	}
+}
+
+func TestGaugeValueOffsetPx(t *testing.T) {
+	const innerR, outerR = 40, 80
+	tests := []struct {
+		name  string
+		ratio float32
+		want  float32
+	}{
+		{"zero adds nothing", 0, 0},
+		{"positive moves down", 0.5, 20},
+		{"negative lifts", -0.25, -10},
+		{"clamped high", 1000, maxGaugeValueOffset * innerR},
+		{"clamped low", -1000, -maxGaugeValueOffset * innerR},
+		{"NaN ignored", float32(math.NaN()), 0},
+		{"+Inf ignored", float32(math.Inf(1)), 0},
+		{"-Inf ignored", float32(math.Inf(-1)), 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := gaugeValueOffsetPx(tt.ratio, innerR, outerR)
+			if math.IsNaN(float64(got)) ||
+				math.Abs(float64(got-tt.want)) > 1e-4 {
+				t.Errorf("gaugeValueOffsetPx(%g) = %g, want %g",
+					tt.ratio, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGaugeConstructor_ValuePlacement(t *testing.T) {
+	v := Gauge(GaugeCfg{
+		BaseCfg:          BaseCfg{ID: "gv1"},
+		Value:            42,
+		ShowValue:        true,
+		ValueAnchor:      GaugeValueCentre,
+		ValueOffsetRatio: -0.1,
+		ValueLabel:       "Mbps",
+	})
+	gv, ok := v.(*gaugeView)
+	if !ok {
+		t.Fatal("Gauge did not return *gaugeView")
+	}
+	if gv.cfg.ValueAnchor != GaugeValueCentre {
+		t.Errorf("ValueAnchor = %d, want %d",
+			gv.cfg.ValueAnchor, GaugeValueCentre)
+	}
+	if gv.cfg.ValueOffsetRatio != -0.1 {
+		t.Errorf("ValueOffsetRatio = %g, want -0.1", gv.cfg.ValueOffsetRatio)
+	}
+	if gv.cfg.ValueLabel != "Mbps" {
+		t.Errorf("ValueLabel = %q, want %q", gv.cfg.ValueLabel, "Mbps")
+	}
+	if gv.cfg.ValueFormat != "%.0f" {
+		t.Errorf("defaults not applied, ValueFormat = %q", gv.cfg.ValueFormat)
+	}
+}
+
+// TestExportPNG_GaugeValuePlacement exercises the draw path for every
+// anchor, with a unit line and with an offset Validate would reject.
+// Validate only warns, so draw must survive the bad ratio.
+func TestExportPNG_GaugeValuePlacement(t *testing.T) {
+	tests := []struct {
+		name   string
+		anchor GaugeValueAnchor
+		offset float32
+		label  string
+	}{
+		{"default", GaugeValueDefault, 0, ""},
+		{"centre with unit", GaugeValueCentre, 0, "Mbps"},
+		{"above centre", GaugeValueAboveCentre, -0.1, "Mbps"},
+		{"below arc", GaugeValueBelowArc, 0, ""},
+		{"non-finite offset", GaugeValueCentre, float32(math.NaN()), "Mbps"},
+		{"wild offset", GaugeValueCentre, 1e6, ""},
+		{"unknown anchor", GaugeValueBelowArc + 3, 0, ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := Gauge(GaugeCfg{
+				BaseCfg: BaseCfg{
+					ID:    "gauge-value-placement",
+					Width: 400, Height: 300,
+				},
+				Value:            72,
+				Max:              100,
+				ShowValue:        true,
+				ValueAnchor:      tt.anchor,
+				ValueOffsetRatio: tt.offset,
+				ValueLabel:       tt.label,
+			})
+			path := filepath.Join(t.TempDir(), "gauge_value.png")
+			if err := ExportPNG(v, 400, 300, path); err != nil {
+				t.Fatal(err)
+			}
+			assertValidPNG(t, path, 400, 300)
+		})
 	}
 }

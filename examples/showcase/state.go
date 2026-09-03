@@ -133,6 +133,7 @@ var demoEntries = []DemoEntry{
 	// Gauge
 	{ID: "gauge_basic", Label: "Gauge with Zones", Group: groupGauge, Summary: "CPU usage gauge with colored warning zones.", Tags: []string{"gauge", "arc", "zone", "value"}},
 	{ID: "gauge_simple", Label: "Simple Gauge", Group: groupGauge, Summary: "Completion percentage with no zones.", Tags: []string{"gauge", "simple", "percent"}},
+	{ID: "gauge_value_placement", Label: "Gauge Value Placement", Group: groupGauge, Summary: "Value centred in a thin ring with a unit line under it.", Tags: []string{"gauge", "value", "label", "anchor"}},
 
 	// Area
 	{ID: "area_basic", Label: "Basic Area", Group: groupArea, Summary: "User signups over time.", Tags: []string{"area", "signups", "time"}},

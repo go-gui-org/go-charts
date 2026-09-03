@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- The gauge value text is placeable. `GaugeCfg.ValueAnchor` selects the base
+  point (`GaugeValueDefault`, `GaugeValueCentre`, `GaugeValueAboveCentre`,
+  `GaugeValueBelowArc`), `ValueOffsetRatio` shifts it by a signed fraction of
+  the hole radius, and `ValueLabel` draws a unit line under the value in
+  `TickStyle`. The zero value of each field keeps the previous output, so no
+  existing dial moves.
+
 ## v0.6.0 - 2026-09-02
 
 - **The module path is now `github.com/go-gui-org/go-charts`.** This is the
