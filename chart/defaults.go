@@ -34,6 +34,14 @@ const (
 	// by the hub and by the needle itself.
 	DefaultGaugeValueDropRatio float32 = 0.45
 
+	// DefaultGaugeValueLabelGapPx is the vertical gap between the
+	// value text and the unit line drawn under it.
+	DefaultGaugeValueLabelGapPx float32 = 3
+
+	// DefaultGaugeValueBelowArcGapPx is the clearance between the
+	// outer radius and value text anchored below the whole dial.
+	DefaultGaugeValueBelowArcGapPx float32 = 6
+
 	// DefaultGaugeMajorTickPx is the length of a labelled
 	// graduation, measured outward from the arc.
 	DefaultGaugeMajorTickPx float32 = 6

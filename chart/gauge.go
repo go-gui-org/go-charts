@@ -19,6 +19,33 @@ type GaugeZone struct {
 	Color     gui.Color
 }
 
+// GaugeValueAnchor selects the base point for the value text. The
+// zero value keeps the historical placement, which drops the text
+// below the centre so the needle and its hub do not cross it.
+type GaugeValueAnchor uint8
+
+const (
+	// GaugeValueDefault drops the text below the centre by
+	// DefaultGaugeValueDropRatio of the hole radius.
+	GaugeValueDefault GaugeValueAnchor = iota
+
+	// GaugeValueCentre puts the text on the centre. Correct when
+	// no needle is drawn.
+	GaugeValueCentre
+
+	// GaugeValueAboveCentre lifts the text by the same fraction
+	// the default drops it.
+	GaugeValueAboveCentre
+
+	// GaugeValueBelowArc puts the text under the whole dial, clear
+	// of the arc and the hole.
+	GaugeValueBelowArc
+)
+
+// maxGaugeValueOffset bounds ValueOffsetRatio, which keeps text with
+// an absurd offset near the dial instead of far outside the clip box.
+const maxGaugeValueOffset float32 = 10
+
 // GaugeCfg configures a gauge chart.
 type GaugeCfg struct {
 	BaseCfg
@@ -52,6 +79,21 @@ type GaugeCfg struct {
 
 	// ShowValue renders the current value as centered text.
 	ShowValue bool
+
+	// ValueAnchor selects where the value text sits vertically.
+	// Default: GaugeValueDefault, dropped below the centre so the
+	// needle does not cross it.
+	ValueAnchor GaugeValueAnchor
+
+	// ValueOffsetRatio shifts the value text from its anchor, as a
+	// signed fraction of the hole radius (the outer radius when
+	// there is no hole). Positive moves down. Zero adds nothing to
+	// the anchor. Range: [-10, 10].
+	ValueOffsetRatio float32
+
+	// ValueLabel is an optional second line drawn under the value
+	// in TickStyle, usually the unit. Empty draws nothing.
+	ValueLabel string
 
 	// ShowMinMax renders min/max labels at the arc endpoints.
 	// Redundant when TickCount is set with ShowTickLabels: the
@@ -137,6 +179,17 @@ func (cfg *GaugeCfg) Validate() error {
 	}
 	if cfg.MinorTicks < 0 {
 		errs = append(errs, "MinorTicks negative")
+	}
+	off := float64(cfg.ValueOffsetRatio)
+	switch {
+	case math.IsNaN(off) || math.IsInf(off, 0):
+		errs = append(errs, "ValueOffsetRatio not finite")
+	case cfg.ValueOffsetRatio < -maxGaugeValueOffset ||
+		cfg.ValueOffsetRatio > maxGaugeValueOffset:
+		errs = append(errs, "ValueOffsetRatio out of [-10, 10]")
+	}
+	if cfg.ValueAnchor > GaugeValueBelowArc {
+		errs = append(errs, "ValueAnchor unknown")
 	}
 	// Validate zone thresholds are ascending and within range.
 	prev := cfg.Min
@@ -468,23 +521,8 @@ func (gv *gaugeView) draw(dc *gui.DrawContext) {
 		ctx.Text(ex-tw/2, ey-fh/2, maxLabel, style)
 	}
 
-	// Value text, horizontally centred but dropped below the middle:
-	// the needle pivots on the centre, so text placed there is drawn
-	// over by the hub and struck through by the needle. The drop is a
-	// fraction of the hole's radius, which keeps the text inside the
-	// hole at any size. A gauge with no hole falls back to the outer
-	// radius.
 	if cfg.ShowValue {
-		style := th.TitleStyle
-		fh := ctx.FontHeight(style)
-		valText := fmt.Sprintf(cfg.ValueFormat, cfg.Value)
-		tw := ctx.TextWidth(valText, style)
-		dropR := innerR
-		if dropR == 0 {
-			dropR = outerR
-		}
-		drop := dropR * DefaultGaugeValueDropRatio
-		ctx.Text(cx-tw/2, cy+drop-fh/2, valText, style)
+		gv.drawValueText(ctx, th, cx, cy, innerR, outerR)
 	}
 
 	// Legend for zones.
@@ -517,5 +555,75 @@ func (gv *gaugeView) draw(dc *gui.DrawContext) {
 		}
 		drawTooltip(ctx, gv.hoverPx, gv.hoverPy, label, th,
 			plotRect{left, right, top, bottom})
+	}
+}
+
+// gaugeValueBaseY returns the vertical anchor point for the value
+// text. radiusRef is the hole radius, or the outer radius when the
+// gauge has no hole, so an anchor holds its place at any dial size.
+func gaugeValueBaseY(anchor GaugeValueAnchor, cy, innerR, outerR float32) float32 {
+	radiusRef := innerR
+	if radiusRef == 0 {
+		radiusRef = outerR
+	}
+	switch anchor {
+	case GaugeValueCentre:
+		return cy
+	case GaugeValueAboveCentre:
+		return cy - radiusRef*DefaultGaugeValueDropRatio
+	case GaugeValueBelowArc:
+		return cy + outerR + DefaultGaugeValueBelowArcGapPx
+	default:
+		// GaugeValueDefault, and any unknown value: the needle
+		// pivots on the centre, so text placed there is drawn over
+		// by the hub and struck through by the needle.
+		return cy + radiusRef*DefaultGaugeValueDropRatio
+	}
+}
+
+// gaugeValueOffsetPx converts ValueOffsetRatio into pixels. Validate
+// only warns about a bad ratio, so the draw path must not trust it:
+// a non-finite ratio contributes nothing and a wild one is clamped.
+func gaugeValueOffsetPx(ratio, innerR, outerR float32) float32 {
+	r := float64(ratio)
+	if math.IsNaN(r) || math.IsInf(r, 0) {
+		return 0
+	}
+	ratio = min(max(ratio, -maxGaugeValueOffset), maxGaugeValueOffset)
+	radiusRef := innerR
+	if radiusRef == 0 {
+		radiusRef = outerR
+	}
+	return ratio * radiusRef
+}
+
+// drawValueText draws the value, and the unit line under it when
+// ValueLabel is set. The two lines are treated as one block centred
+// on the anchor, so adding a unit does not move the number off it.
+func (gv *gaugeView) drawValueText(ctx *render.Context, th *theme.Theme,
+	cx, cy, innerR, outerR float32) {
+	cfg := &gv.cfg
+	style := th.TitleStyle
+	fh := ctx.FontHeight(style)
+	valText := fmt.Sprintf(cfg.ValueFormat, cfg.Value)
+
+	// Height of the whole block, so the anchor centres value plus
+	// unit rather than the value alone.
+	blockH := fh
+	if cfg.ValueLabel != "" {
+		blockH += DefaultGaugeValueLabelGapPx + ctx.FontHeight(th.TickStyle)
+	}
+
+	y := gaugeValueBaseY(cfg.ValueAnchor, cy, innerR, outerR) +
+		gaugeValueOffsetPx(cfg.ValueOffsetRatio, innerR, outerR)
+	top := y - blockH/2
+
+	tw := ctx.TextWidth(valText, style)
+	ctx.Text(cx-tw/2, top, valText, style)
+
+	if cfg.ValueLabel != "" {
+		lw := ctx.TextWidth(cfg.ValueLabel, th.TickStyle)
+		ctx.Text(cx-lw/2, top+fh+DefaultGaugeValueLabelGapPx,
+			cfg.ValueLabel, th.TickStyle)
 	}
 }
