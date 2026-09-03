@@ -851,9 +851,9 @@ func emitBarTooltip(
 ) {
 	var label string
 	if serName != "" {
-		label = fmt.Sprintf("%s / %s: %g", serName, catLabel, v)
+		label = fmt.Sprintf("%s / %s: %s", serName, catLabel, tooltipNum(v))
 	} else {
-		label = fmt.Sprintf("%s: %g", catLabel, v)
+		label = fmt.Sprintf("%s: %s", catLabel, tooltipNum(v))
 	}
 	drawTooltip(ctx, mx, my, label, th, pr)
 }

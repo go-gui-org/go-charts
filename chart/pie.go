@@ -222,9 +222,10 @@ func (pv *pieView) tooltipPie(
 	pct := s.Value / total * 100
 	var label string
 	if s.Label != "" {
-		label = fmt.Sprintf("%s: %g (%.1f%%)", s.Label, s.Value, pct)
+		label = fmt.Sprintf("%s: %s (%.1f%%)",
+			s.Label, tooltipNum(s.Value), pct)
 	} else {
-		label = fmt.Sprintf("%g (%.1f%%)", s.Value, pct)
+		label = fmt.Sprintf("%s (%.1f%%)", tooltipNum(s.Value), pct)
 	}
 	drawTooltip(ctx, pv.hoverPx, pv.hoverPy, label, th, pr)
 }

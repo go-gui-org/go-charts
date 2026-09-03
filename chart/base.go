@@ -1,6 +1,7 @@
 package chart
 
 import (
+	"cmp"
 	"errors"
 	"strings"
 	"time"
@@ -35,6 +36,13 @@ type BaseCfg struct {
 	// Annotations adds reference lines, text labels, and shaded
 	// regions to the chart. Ignored by pie and gauge charts.
 	Annotations Annotations
+
+	// TooltipXLabel and TooltipYLabel name the two coordinates in
+	// the hover tooltip. Empty gives "X" and "Y", which say what
+	// the number is but not what it measures; set them to the unit
+	// the axis counts in, such as "sec" and "Mbps".
+	TooltipXLabel string
+	TooltipYLabel string
 
 	// Animate enables entry animation on first render. Series
 	// draw in progressively over DefaultAnimDuration.
@@ -98,4 +106,10 @@ func buildError(prefix string, errs []string) error {
 		return nil
 	}
 	return errors.New(prefix + ": " + strings.Join(errs, "; "))
+}
+
+// tooltipAxisNames is the pair of coordinate names a tooltip labels
+// its numbers with, falling back to the bare axis letters.
+func (b *BaseCfg) tooltipAxisNames() (x, y string) {
+	return cmp.Or(b.TooltipXLabel, "X"), cmp.Or(b.TooltipYLabel, "Y")
 }

@@ -552,9 +552,10 @@ func (cv *comboView) tooltipCombo(
 
 	var label string
 	if s.Name() != "" {
-		label = fmt.Sprintf("%s / %s: %g", s.Name(), v.Label, v.Value)
+		label = fmt.Sprintf("%s / %s: %s",
+			s.Name(), v.Label, tooltipNum(v.Value))
 	} else {
-		label = fmt.Sprintf("%s: %g", v.Label, v.Value)
+		label = fmt.Sprintf("%s: %s", v.Label, tooltipNum(v.Value))
 	}
 	drawTooltip(ctx, cx, py, label, th, pr)
 }

@@ -404,10 +404,11 @@ func (lv *lineView) drawTooltips(
 	}
 	drawCrosshair(ctx, th, lv.hoverPx, lv.hoverPy, pr)
 	pa := lv.lastPA
+	xName, yName := cfg.tooltipAxisNames()
 	drawXYTooltip(ctx, th, cfg.Series, pa,
-		lv.hoverPx, lv.hoverPy)
+		lv.hoverPx, lv.hoverPy, xName, yName)
 	drawErrorXYTooltip(ctx, th, cfg.ErrorSeries, pa,
-		lv.hoverPx, lv.hoverPy)
+		lv.hoverPx, lv.hoverPy, xName, yName)
 }
 
 // hoverHighlight returns the hovered series index and pixel

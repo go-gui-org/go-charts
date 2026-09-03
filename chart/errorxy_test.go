@@ -166,7 +166,7 @@ func TestFormatErrorPointLabel_AllCombinations(t *testing.T) {
 			[]string{"X err: +0.5/-0.5"}},
 	}
 	for _, c := range cases {
-		got := formatErrorPointLabel(c.name, c.p)
+		got := formatErrorPointLabel(c.name, c.p, "X", "Y")
 		for _, sub := range c.want {
 			if !strings.Contains(got, sub) {
 				t.Errorf("%s: %q missing %q", c.name, got, sub)
