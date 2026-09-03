@@ -141,10 +141,20 @@ func applyAutoScroll(
 	if !autoScroll || windowSize <= 0 || zoomed {
 		return
 	}
-	_, dataXMax, _, _ := seriesBoundsXY(ss)
+	dataXMin, dataXMax, _, _ := seriesBoundsXY(ss)
 	updateAutoScroll(w, id, dataXMax, windowSize)
 	if xMax, ok := scrollXMax(w, id); ok {
-		xAxis.SetRange(xMax-windowSize, xMax)
+		// The right edge tweens towards the newest point, so it lags
+		// the data for the length of the animation. Subtracting the
+		// window from that lagging edge puts the left edge before the
+		// first point whenever the window is as wide as the data, and
+		// it walks back to the start as the tween lands: the whole
+		// plot, tick labels included, slides sideways on every update.
+		// Clamping the left edge to the first X pins it instead, and
+		// the clamp is inert once the data is wider than the window,
+		// which is the case the scroll is for.
+		xMin := max(xMax-windowSize, dataXMin)
+		xAxis.SetRange(xMin, xMax)
 		xAxis.SetOverrideDomain(true)
 	}
 }
