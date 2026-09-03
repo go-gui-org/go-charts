@@ -95,3 +95,83 @@ func demoGaugeValuePlacement(w *gui.Window) gui.View {
     ValueLabel:  "Mbps",
 })`)
 }
+
+// demoGaugeGradient shows GradientZones: the same three zones as the
+// basic dial, blended into one continuous sweep instead of stepping
+// at each threshold. The legend and tooltip still use the discrete
+// thresholds, so the reading is no less precise.
+func demoGaugeGradient(w *gui.Window) gui.View {
+	return demoWithCode(w, "gauge-gradient", chart.Gauge(chart.GaugeCfg{
+		BaseCfg: chart.BaseCfg{
+			ID:             "gauge-gradient",
+			Title:          "Download Speed",
+			Sizing:         gui.FillFixed,
+			Height:         300,
+			LegendPosition: &posBottom,
+		},
+		Value:         342,
+		Max:           500,
+		ShowValue:     true,
+		ShowPointer:   true,
+		ValueLabel:    "Mbps",
+		GradientZones: true,
+		Zones: []chart.GaugeZone{
+			{Label: "Slow", Threshold: 150, Color: gui.Hex(0xE15759)},
+			{Label: "Fair", Threshold: 300, Color: gui.Hex(0xF28E2B)},
+			{Label: "Fast", Threshold: 500, Color: gui.Hex(0x59A14F)},
+		},
+	}), `chart.Gauge(chart.GaugeCfg{
+    BaseCfg: chart.BaseCfg{
+        Title: "Download Speed",
+    },
+    Value:         342,
+    Max:           500,
+    ShowValue:     true,
+    ShowPointer:   true,
+    ValueLabel:    "Mbps",
+    GradientZones: true,
+    Zones: []chart.GaugeZone{
+        {Label: "Slow", Threshold: 150, Color: gui.Hex(0xE15759)},
+        {Label: "Fair", Threshold: 300, Color: gui.Hex(0xF28E2B)},
+        {Label: "Fast", Threshold: 500, Color: gui.Hex(0x59A14F)},
+    },
+})`)
+}
+
+// demoGaugeArcRamp shows ArcGradient: an explicit ramp for a dial
+// with no zones, so the sweep is described once and directly.
+func demoGaugeArcRamp(w *gui.Window) gui.View {
+	return demoWithCode(w, "gauge-arc-ramp", chart.Gauge(chart.GaugeCfg{
+		BaseCfg: chart.BaseCfg{
+			ID:             "gauge-arc-ramp",
+			Title:          "Battery Health",
+			Sizing:         gui.FillFixed,
+			Height:         300,
+			LegendPosition: &posBottom,
+		},
+		Value:       78,
+		ShowValue:   true,
+		ValueAnchor: chart.GaugeValueCentre,
+		ValueFormat: "%.0f%%",
+		InnerRatio:  0.8,
+		ArcGradient: []gui.GradientStop{
+			{Color: gui.Hex(0xE15759), Pos: 0},
+			{Color: gui.Hex(0xF28E2B), Pos: 0.5},
+			{Color: gui.Hex(0x59A14F), Pos: 1},
+		},
+	}), `chart.Gauge(chart.GaugeCfg{
+    BaseCfg: chart.BaseCfg{
+        Title: "Battery Health",
+    },
+    Value:       78,
+    ShowValue:   true,
+    ValueAnchor: chart.GaugeValueCentre,
+    ValueFormat: "%.0f%%",
+    InnerRatio:  0.8,
+    ArcGradient: []gui.GradientStop{
+        {Color: gui.Hex(0xE15759), Pos: 0},
+        {Color: gui.Hex(0xF28E2B), Pos: 0.5},
+        {Color: gui.Hex(0x59A14F), Pos: 1},
+    },
+})`)
+}

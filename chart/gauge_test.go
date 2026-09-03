@@ -258,7 +258,7 @@ func TestGaugeDrawTicksDoesNotPanicOnHugeCounts(t *testing.T) {
 		ShowTickLabels: true,
 	}
 	cfg.applyGaugeDefaults()
-	gv := &gaugeView{cfg: cfg}
+	gv := newGaugeView(cfg)
 	// Use a headless DrawContext: NewContext needs a DrawContext,
 	// but we only need to ensure drawTicks itself does not panic
 	// when given a valid render.Context. Create a minimal one via

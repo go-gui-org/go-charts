@@ -38,6 +38,7 @@ First renderable chart types.
 - [x] Pie chart with label placement
 - [x] Donut chart (InnerRadius > 0)
 - [x] Gauge chart (arc-based, value indicator)
+- [x] Gauge arc gradient sweep (`GradientZones`, `ArcGradient`)
 - [x] Segment hover highlight
 - [x] Percentage labels
 
