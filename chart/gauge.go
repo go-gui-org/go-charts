@@ -66,6 +66,20 @@ type GaugeCfg struct {
 	// within [Min, Max].
 	Zones []GaugeZone
 
+	// GradientZones blends the Zones colors into one continuous
+	// sweep along the arc instead of stepping at each threshold.
+	// Each zone color is anchored at the middle of its own span, so
+	// a zone still reads as its own color at its centre. Ignored
+	// when Zones is empty or ArcGradient is set. The thresholds
+	// still drive hit-testing, the tooltip and the legend; only the
+	// fill changes.
+	GradientZones bool
+
+	// ArcGradient is an explicit ramp for callers not using Zones.
+	// Stop positions are normalized over Min..Max. Takes precedence
+	// over GradientZones. At most 256 stops; more are dropped.
+	ArcGradient []gui.GradientStop
+
 	// InnerRatio is the inner radius as a fraction of the outer
 	// radius (0–1). Default: 0.7. Controls arc thickness.
 	InnerRatio float32
@@ -128,9 +142,24 @@ type gaugeView struct {
 	hoverPx  float32
 	hoverPy  float32
 	hovering bool
+	// stops is the arc ramp, nil when the gauge is not
+	// gradient-filled. Built once: cfg never changes after
+	// construction, so rebuilding it per frame would only repeat
+	// the same allocation and sort on every redraw.
+	stops []gui.GradientStop
 	// Cached geometry for cursor hit-testing.
 	cx, cy, outerR, innerR float32
 	win                    *gui.Window
+}
+
+// newGaugeView builds the view and everything derived from cfg that
+// the draw path would otherwise recompute each frame. cfg must have
+// its defaults applied already.
+func newGaugeView(cfg GaugeCfg) *gaugeView {
+	return &gaugeView{
+		cfg:   cfg,
+		stops: gaugeGradientStops(&cfg, cfg.Theme),
+	}
 }
 
 // Gauge creates a gauge chart view.
@@ -142,7 +171,7 @@ func Gauge(cfg GaugeCfg) gui.View {
 	if cfg.ShowDataTable {
 		return dataTableGauge(&cfg.BaseCfg, cfg.Value, cfg.Min, cfg.Max)
 	}
-	return &gaugeView{cfg: cfg}
+	return newGaugeView(cfg)
 }
 
 func (cfg *GaugeCfg) applyGaugeDefaults() {
@@ -203,6 +232,20 @@ func (cfg *GaugeCfg) Validate() error {
 				"zone %d threshold %.4g > Max %.4g", i, z.Threshold, cfg.Max))
 		}
 		prev = z.Threshold
+	}
+	if len(cfg.ArcGradient) > maxArcGradientStops {
+		errs = append(errs, fmt.Sprintf("ArcGradient has %d stops > %d",
+			len(cfg.ArcGradient), maxArcGradientStops))
+	}
+	for i, s := range cfg.ArcGradient {
+		p := float64(s.Pos)
+		switch {
+		case math.IsNaN(p) || math.IsInf(p, 0):
+			errs = append(errs, fmt.Sprintf("ArcGradient stop %d Pos not finite", i))
+		case s.Pos < 0 || s.Pos > 1:
+			errs = append(errs, fmt.Sprintf(
+				"ArcGradient stop %d Pos %.4g out of [0, 1]", i, s.Pos))
+		}
 	}
 	return buildError("gauge", errs)
 }
@@ -379,6 +422,62 @@ func (gv *gaugeView) gaugeHitTest(mx, my float32) bool {
 	return a <= start+gv.cfg.ArcAngle
 }
 
+// gaugeZoneColor returns the color of the zone the value falls in,
+// falling back to the palette for an unset zone color and to the
+// first palette entry when there are no zones at all.
+func gaugeZoneColor(cfg *GaugeCfg, th *theme.Theme) gui.Color {
+	for i, z := range cfg.Zones {
+		if cfg.Value > z.Threshold {
+			continue
+		}
+		if z.Color.IsSet() {
+			return z.Color
+		}
+		return seriesColor(gui.Color{}, i, th.Palette)
+	}
+	return seriesColor(gui.Color{}, 0, th.Palette)
+}
+
+// drawTrack draws the unlit dial under the value arc: a grey ring,
+// then either the zone tints as flat steps or the whole ramp as one
+// sweep. stops is nil when the gauge is not gradient-filled.
+func (gv *gaugeView) drawTrack(ctx *render.Context, cx, cy, outerR,
+	startAngle float32, stops []gui.GradientStop) {
+
+	cfg := &gv.cfg
+	th := cfg.Theme
+
+	if stops != nil {
+		// No grey ring: every segment of the sweep is opaque and
+		// spans the whole arc, so a ring beneath it would be
+		// completely covered.
+		drawGradientArc(ctx, cx, cy, outerR,
+			startAngle, cfg.ArcAngle, stops, 0, 1,
+			gaugeTrackAlpha, th.Background)
+		return
+	}
+
+	trackColor := gui.RGBA(128, 128, 128, 50)
+	ctx.FilledArc(cx, cy, outerR, outerR,
+		startAngle, cfg.ArcAngle, trackColor)
+
+	// Zone arcs on the background track.
+	prevFrac := float32(0)
+	for i, z := range cfg.Zones {
+		frac := float32(gaugeValueFraction(z.Threshold, cfg.Min, cfg.Max))
+		sweep := (frac - prevFrac) * cfg.ArcAngle
+		color := z.Color
+		if !color.IsSet() {
+			color = seriesColor(gui.Color{}, i, th.Palette)
+		}
+		// Draw zone at reduced alpha as background.
+		zoneColor := gui.RGBA(color.R, color.G, color.B, 60)
+		ctx.FilledArc(cx, cy, outerR, outerR,
+			startAngle+prevFrac*cfg.ArcAngle, sweep, zoneColor)
+		prevFrac = frac
+	}
+}
+
 func (gv *gaugeView) draw(dc *gui.DrawContext) {
 	ctx := render.NewContext(dc)
 	cfg := &gv.cfg
@@ -419,45 +518,39 @@ func (gv *gaugeView) draw(dc *gui.DrawContext) {
 
 	startAngle := gaugeStartAngle(cfg.ArcAngle)
 
-	// Background track arc.
-	trackColor := gui.RGBA(128, 128, 128, 50)
-	ctx.FilledArc(cx, cy, outerR, outerR,
-		startAngle, cfg.ArcAngle, trackColor)
+	// The ramp is used at two strengths: a tint for the background
+	// track, full strength for the value arc.
+	stops := gv.stops
 
-	// Zone arcs on the background track.
-	if len(cfg.Zones) > 0 {
-		prevFrac := float32(0)
-		for i, z := range cfg.Zones {
-			frac := float32(gaugeValueFraction(z.Threshold, cfg.Min, cfg.Max))
-			sweep := (frac - prevFrac) * cfg.ArcAngle
-			color := z.Color
-			if !color.IsSet() {
-				color = seriesColor(gui.Color{}, i, th.Palette)
-			}
-			// Draw zone at reduced alpha as background.
-			zoneColor := gui.RGBA(color.R, color.G, color.B, 60)
-			ctx.FilledArc(cx, cy, outerR, outerR,
-				startAngle+prevFrac*cfg.ArcAngle, sweep, zoneColor)
-			prevFrac = frac
-		}
-	}
+	gv.drawTrack(ctx, cx, cy, outerR, startAngle, stops)
 
 	// Value arc.
 	progress := animProgress(gv.win, cfg.ID)
 	valFrac := float32(gaugeValueFraction(cfg.Value, cfg.Min, cfg.Max))
 	valSweep := valFrac * cfg.ArcAngle * progress
-	valColor := seriesColor(gui.Color{}, 0, th.Palette)
-	// Color the value arc based on which zone the value falls in.
-	for i, z := range cfg.Zones {
-		if cfg.Value <= z.Threshold {
-			valColor = z.Color
-			if !valColor.IsSet() {
-				valColor = seriesColor(gui.Color{}, i, th.Palette)
-			}
-			break
-		}
+
+	// The lit fraction, which trails valFrac while the entry
+	// animation runs. Using it rather than valFrac keeps every
+	// segment on the same ramp position as the track beneath it.
+	litFrac := valFrac * progress
+
+	// The needle and hub take the color of the arc under the tip:
+	// the ramp position when swept, the containing zone when not.
+	var valColor gui.Color
+	if stops != nil {
+		valColor = gaugeSampleStops(stops, litFrac)
+	} else {
+		valColor = gaugeZoneColor(cfg, th)
 	}
-	if valSweep > 0 {
+	switch {
+	case valSweep <= 0:
+		// Nothing lit yet.
+	case stops != nil:
+		// Only the swept part of the ramp, so the lit arc is the same
+		// colors the track shows, at full strength.
+		drawGradientArc(ctx, cx, cy, outerR,
+			startAngle, valSweep, stops, 0, litFrac, 1, th.Background)
+	default:
 		ctx.FilledArc(cx, cy, outerR, outerR,
 			startAngle, valSweep, valColor)
 	}

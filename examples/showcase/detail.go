@@ -98,6 +98,8 @@ var componentDemos = map[string]func(*gui.Window) gui.View{
 	"gauge_basic":           demoGauge,
 	"gauge_simple":          demoGaugeSimple,
 	"gauge_value_placement": demoGaugeValuePlacement,
+	"gauge_gradient":        demoGaugeGradient,
+	"gauge_arc_ramp":        demoGaugeArcRamp,
 	"area_basic":            demoArea,
 	"area_stacked":          demoAreaStacked,
 	"scatter_basic":         demoScatter,

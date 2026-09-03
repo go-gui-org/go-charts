@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- The gauge arc can sweep its color instead of stepping at each zone edge.
+  `GaugeCfg.GradientZones` blends the existing `Zones` colors into one
+  continuous ramp, anchoring each zone color at the middle of its own span.
+  `GaugeCfg.ArcGradient` takes an explicit `[]gui.GradientStop` ramp for a dial
+  with no zones, positioned over `Min..Max`. Both default off, so no existing
+  dial changes. The thresholds still drive hit-testing, the tooltip, and the
+  legend; only the fill changes.
+- `theme.LerpOklab` interpolates two colors in the Oklab perceptual space. Use
+  it instead of `theme.Lerp` for a ramp between two hues: sRGB channel averaging
+  drops a red-to-green midpoint towards grey, and Oklab does not.
 - The gauge value text is placeable. `GaugeCfg.ValueAnchor` selects the base
   point (`GaugeValueDefault`, `GaugeValueCentre`, `GaugeValueAboveCentre`,
   `GaugeValueBelowArc`), `ValueOffsetRatio` shifts it by a signed fraction of
