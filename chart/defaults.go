@@ -15,6 +15,11 @@ const (
 	DefaultGaugeArcAngle   float32 = 3 * 3.14159265 / 2 // 270°
 	DefaultGaugeInnerRatio float32 = 0.7
 
+	// DefaultGaugeRadiusRatio is how much of half the smaller plot
+	// side the dial takes. The remainder is the built-in allowance
+	// for graduation labels drawn outside the arc.
+	DefaultGaugeRadiusRatio float32 = 0.85
+
 	// DefaultGaugePointerHubRatio is the hub circle radius as
 	// a fraction of the inner radius.
 	DefaultGaugePointerHubRatio float32 = 0.15
@@ -22,6 +27,24 @@ const (
 	// DefaultGaugePointerWidthPx is the half-width of the
 	// needle base in pixels.
 	DefaultGaugePointerWidthPx float32 = 4
+
+	// DefaultGaugeValueDropRatio is how far below the centre the
+	// value text sits, as a fraction of the inner radius. The
+	// needle pivots on the centre, so text drawn there is crossed
+	// by the hub and by the needle itself.
+	DefaultGaugeValueDropRatio float32 = 0.45
+
+	// DefaultGaugeMajorTickPx is the length of a labelled
+	// graduation, measured outward from the arc.
+	DefaultGaugeMajorTickPx float32 = 6
+
+	// DefaultGaugeMinorTickPx is the length of an unlabelled
+	// graduation between two major ones.
+	DefaultGaugeMinorTickPx float32 = 3
+
+	// DefaultGaugeTickGapPx is the clearance between the arc and
+	// the graduations, and between a graduation and its label.
+	DefaultGaugeTickGapPx float32 = 3
 
 	// DefaultCandleWidthRatio is the fraction of the slot width used
 	// for the candle body when CandleWidth is 0.

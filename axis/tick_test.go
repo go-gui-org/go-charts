@@ -145,3 +145,92 @@ func TestDomainMethod(t *testing.T) {
 		t.Errorf("Domain() = [%g, %g], want [10, 20]", lo, hi)
 	}
 }
+
+func TestGenerateExactTicksAlwaysReturnsCount(t *testing.T) {
+	// A live throughput axis: the maximum climbs through every
+	// magnitude, and the label count must not move with it.
+	for _, max := range []float64{1, 7, 12, 45, 99, 100, 137, 480, 501, 999, 1024, 8600} {
+		for _, count := range []int{3, 4, 5, 8} {
+			ticks := GenerateExactTicks(0, max, count)
+			if len(ticks) != count {
+				t.Fatalf("max %v count %d: got %d ticks %v", max, count, len(ticks), ticks)
+			}
+			if ticks[0] != 0 {
+				t.Errorf("max %v count %d: floor moved to %v", max, count, ticks[0])
+			}
+			if ticks[count-1] < max {
+				t.Errorf("max %v count %d: top %v is below the data", max, count, ticks[count-1])
+			}
+		}
+	}
+}
+
+func TestGenerateExactTicksHandlesDegenerateRanges(t *testing.T) {
+	cases := []struct{ min, max float64 }{
+		{0, 0},    // no data yet
+		{50, 50},  // a flat series
+		{-20, 20}, // straddling zero
+		{100, 0},  // reversed
+	}
+	for _, c := range cases {
+		ticks := GenerateExactTicks(c.min, c.max, 4)
+		if len(ticks) != 4 {
+			t.Errorf("[%v, %v]: got %d ticks %v", c.min, c.max, len(ticks), ticks)
+		}
+	}
+}
+
+func TestGenerateExactTicksNonFiniteFallback(t *testing.T) {
+	for _, c := range []struct{ min, max float64 }{
+		{math.NaN(), 10},
+		{0, math.NaN()},
+		{math.NaN(), math.NaN()},
+		{math.Inf(1), 10},
+		{0, math.Inf(1)},
+	} {
+		ticks := GenerateExactTicks(c.min, c.max, 4)
+		// Fallback to GenerateNiceTicks must not panic and must return
+		// a finite slice (possibly nil or single-value).
+		for _, v := range ticks {
+			if math.IsNaN(v) || math.IsInf(v, 0) {
+				t.Errorf("[%v,%v]: non-finite tick %v", c.min, c.max, v)
+			}
+		}
+	}
+}
+
+func TestGenerateExactTicksCapsLargeCount(t *testing.T) {
+	ticks := GenerateExactTicks(0, 100, 100000)
+	if len(ticks) != maxExactTicks {
+		t.Errorf("large count: got %d, want %d", len(ticks), maxExactTicks)
+	}
+	// Also via Linear path: TickCount huge must not allocate unbounded.
+	a := NewLinear(LinearCfg{Min: 0, Max: 100, TickCount: 100000})
+	got := a.Ticks(0, 200)
+	if len(got) != maxExactTicks {
+		t.Errorf("Linear huge TickCount: got %d, want %d", len(got), maxExactTicks)
+	}
+}
+
+func TestGenerateExactTicksClampsSmallCount(t *testing.T) {
+	for _, c := range []int{0, 1, -5} {
+		ticks := GenerateExactTicks(0, 10, c)
+		if len(ticks) != 2 {
+			t.Errorf("count %d: got %d, want 2", c, len(ticks))
+		}
+	}
+}
+
+func TestLinearTickCountExact(t *testing.T) {
+	a := NewLinear(LinearCfg{Min: 0, Max: 100, TickCount: 5})
+	ticks := a.Ticks(0, 200)
+	if len(ticks) != 5 {
+		t.Fatalf("TickCount=5: got %d ticks %v", len(ticks), ticks)
+	}
+	if ticks[0].Value != 0 {
+		t.Errorf("floor moved to %v, want 0", ticks[0].Value)
+	}
+	if ticks[len(ticks)-1].Value < 100 {
+		t.Errorf("top %v below data 100", ticks[len(ticks)-1].Value)
+	}
+}
