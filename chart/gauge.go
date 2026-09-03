@@ -43,11 +43,34 @@ type GaugeCfg struct {
 	// radius (0–1). Default: 0.7. Controls arc thickness.
 	InnerRatio float32
 
+	// RadiusRatio is the outer radius as a fraction of half the
+	// smaller plot side (0–1]. Default: 0.85, which leaves room
+	// for graduation labels inside the plot box. Raise it towards
+	// 1 when the theme padding already reserves that room, or the
+	// allowance is paid twice and the dial is needlessly small.
+	RadiusRatio float32
+
 	// ShowValue renders the current value as centered text.
 	ShowValue bool
 
 	// ShowMinMax renders min/max labels at the arc endpoints.
+	// Redundant when TickCount is set with ShowTickLabels: the
+	// first and last graduation already carry those numbers.
 	ShowMinMax bool
+
+	// TickCount is how many intervals the arc is divided into by
+	// major graduations, so it draws TickCount+1 marks including
+	// both endpoints. Zero draws none.
+	TickCount int
+
+	// MinorTicks is how many unlabelled graduations fall between
+	// two major ones. Zero draws none. Ignored when TickCount
+	// is zero.
+	MinorTicks int
+
+	// ShowTickLabels renders the value of each major graduation
+	// beyond it, formatted with ValueFormat.
+	ShowTickLabels bool
 
 	// ShowPointer draws a triangular needle pointing at the
 	// current value, with a hub circle at the center.
@@ -87,6 +110,7 @@ func (cfg *GaugeCfg) applyGaugeDefaults() {
 	}
 	cfg.ArcAngle = cmp.Or(cfg.ArcAngle, DefaultGaugeArcAngle)
 	cfg.InnerRatio = cmp.Or(cfg.InnerRatio, DefaultGaugeInnerRatio)
+	cfg.RadiusRatio = cmp.Or(cfg.RadiusRatio, DefaultGaugeRadiusRatio)
 	cfg.ValueFormat = cmp.Or(cfg.ValueFormat, "%.0f")
 }
 
@@ -104,6 +128,15 @@ func (cfg *GaugeCfg) Validate() error {
 	}
 	if cfg.InnerRatio < 0 || cfg.InnerRatio >= 1 {
 		errs = append(errs, "InnerRatio out of [0, 1)")
+	}
+	if cfg.RadiusRatio < 0 || cfg.RadiusRatio > 1 {
+		errs = append(errs, "RadiusRatio out of [0, 1]")
+	}
+	if cfg.TickCount < 0 {
+		errs = append(errs, "TickCount negative")
+	}
+	if cfg.MinorTicks < 0 {
+		errs = append(errs, "MinorTicks negative")
 	}
 	// Validate zone thresholds are ascending and within range.
 	prev := cfg.Min
@@ -149,6 +182,90 @@ func (gv *gaugeView) GenerateLayout(w *gui.Window) gui.Layout {
 		OnHover:      gv.internalHover,
 		OnMouseLeave: gv.internalMouseLeave,
 	}).GenerateLayout(w)
+}
+
+// maxGaugeSteps caps total graduation marks to bound draw work.
+const maxGaugeSteps = 500
+
+// drawTicks draws the graduations around the outside of the arc: a
+// major mark every arc/TickCount, MinorTicks unlabelled marks between
+// each pair, and optionally the value of each major mark beyond it.
+//
+// The marks sit outside the arc rather than over it, so a zone colour
+// is never broken up by a line drawn across it. That means they eat
+// into the theme's padding: allow roughly the tick length plus a line
+// of text on every side the arc reaches.
+func (gv *gaugeView) drawTicks(ctx *render.Context,
+	cx, cy, outerR, startAngle float32) {
+
+	cfg := &gv.cfg
+	th := cfg.Theme
+
+	majorR := outerR + DefaultGaugeTickGapPx
+	labelR := majorR + DefaultGaugeMajorTickPx + DefaultGaugeTickGapPx
+	style := th.TickStyle
+	fh := ctx.FontHeight(style)
+
+	// Total marks, counting both endpoints and the minor marks in
+	// between, so one loop walks the whole arc at a constant step.
+	// Cap to avoid DoS from large user-supplied TickCount/MinorTicks
+	// and to guard the multiplication against overflow.
+	tickCount := min(cfg.TickCount, maxGaugeSteps)
+	minorTicks := min(cfg.MinorTicks, maxGaugeSteps)
+	steps := min(tickCount*(minorTicks+1), maxGaugeSteps)
+	// Recompute effective minorTicks so major detection stays
+	// consistent when steps was clamped.
+	if tickCount > 0 {
+		minorTicks = max(steps/tickCount-1, 0)
+	}
+	span := cfg.Max - cfg.Min
+
+	for i := 0; i <= steps; i++ {
+		frac := float32(i) / float32(steps)
+		angle := float64(startAngle + frac*cfg.ArcAngle)
+		cosA := float32(math.Cos(angle))
+		sinA := float32(math.Sin(angle))
+
+		major := i%(minorTicks+1) == 0
+		length := DefaultGaugeMinorTickPx
+		if major {
+			length = DefaultGaugeMajorTickPx
+		}
+
+		ctx.Line(
+			cx+majorR*cosA, cy+majorR*sinA,
+			cx+(majorR+length)*cosA, cy+(majorR+length)*sinA,
+			th.AxisColor, th.AxisWidth)
+
+		if !major || !cfg.ShowTickLabels {
+			continue
+		}
+
+		// The label is centred on the tick's own angle, which keeps
+		// it clear of its neighbours as long as the caller does not
+		// ask for more graduations than the dial has room for.
+		val := cfg.Min + float64(frac)*span
+		text := fmt.Sprintf(cfg.ValueFormat, val)
+		tw := ctx.TextWidth(text, style)
+		lx, ly := labelCentre(cx, cy, labelR, cosA, sinA, tw, fh)
+		ctx.Text(lx-tw/2, ly-fh/2, text, style)
+	}
+}
+
+// labelCentre places a label outside a circle of radius r so the text
+// box clears it, and returns the centre point to draw around.
+//
+// Centring the box on the radius is not enough: at the left and right of
+// the dial the label runs horizontally, so half its width reaches back
+// over the arc, and a wide number touches the ring. Pushing the box out
+// by its own half-extent along each axis — scaled by the direction
+// cosine, so a label at the top pays with its height and one at the side
+// pays with its width — puts the near edge on the radius instead of the
+// centre.
+func labelCentre(cx, cy, r, cosA, sinA, tw, fh float32) (x, y float32) {
+	x = cx + r*cosA + tw/2*cosA
+	y = cy + r*sinA + fh/2*sinA
+	return x, y
 }
 
 func (gv *gaugeView) internalHover(ctx gui.EventCtx) {
@@ -236,7 +353,7 @@ func (gv *gaugeView) draw(dc *gui.DrawContext) {
 
 	plotW := right - left
 	plotH := bottom - top
-	outerR := min(plotW, plotH) / 2 * 0.85
+	outerR := min(plotW, plotH) / 2 * cfg.RadiusRatio
 	innerR := outerR * cfg.InnerRatio
 	cx := (left + right) / 2
 	cy := (top + bottom) / 2
@@ -297,6 +414,12 @@ func (gv *gaugeView) draw(dc *gui.DrawContext) {
 		ctx.FilledCircle(cx, cy, innerR, th.Background)
 	}
 
+	// Graduations, drawn before the needle so the needle stays on
+	// top of them.
+	if cfg.TickCount > 0 {
+		gv.drawTicks(ctx, cx, cy, outerR, startAngle)
+	}
+
 	// Pointer needle.
 	if cfg.ShowPointer && !math.IsNaN(float64(valSweep)) &&
 		!math.IsInf(float64(valSweep), 0) && outerR > 2 {
@@ -329,27 +452,39 @@ func (gv *gaugeView) draw(dc *gui.DrawContext) {
 
 		// Min label at start angle.
 		minLabel := fmt.Sprintf(cfg.ValueFormat, cfg.Min)
-		mx := cx + labelR*float32(math.Cos(float64(startAngle)))
-		my := cy + labelR*float32(math.Sin(float64(startAngle)))
 		tw := ctx.TextWidth(minLabel, style)
+		mx, my := labelCentre(cx, cy, labelR,
+			float32(math.Cos(float64(startAngle))),
+			float32(math.Sin(float64(startAngle))), tw, fh)
 		ctx.Text(mx-tw/2, my-fh/2, minLabel, style)
 
 		// Max label at end angle.
 		maxLabel := fmt.Sprintf(cfg.ValueFormat, cfg.Max)
 		endAngle := startAngle + cfg.ArcAngle
-		ex := cx + labelR*float32(math.Cos(float64(endAngle)))
-		ey := cy + labelR*float32(math.Sin(float64(endAngle)))
 		tw = ctx.TextWidth(maxLabel, style)
+		ex, ey := labelCentre(cx, cy, labelR,
+			float32(math.Cos(float64(endAngle))),
+			float32(math.Sin(float64(endAngle))), tw, fh)
 		ctx.Text(ex-tw/2, ey-fh/2, maxLabel, style)
 	}
 
-	// Centered value text.
+	// Value text, horizontally centred but dropped below the middle:
+	// the needle pivots on the centre, so text placed there is drawn
+	// over by the hub and struck through by the needle. The drop is a
+	// fraction of the hole's radius, which keeps the text inside the
+	// hole at any size. A gauge with no hole falls back to the outer
+	// radius.
 	if cfg.ShowValue {
 		style := th.TitleStyle
 		fh := ctx.FontHeight(style)
 		valText := fmt.Sprintf(cfg.ValueFormat, cfg.Value)
 		tw := ctx.TextWidth(valText, style)
-		ctx.Text(cx-tw/2, cy-fh/2, valText, style)
+		dropR := innerR
+		if dropR == 0 {
+			dropR = outerR
+		}
+		drop := dropR * DefaultGaugeValueDropRatio
+		ctx.Text(cx-tw/2, cy+drop-fh/2, valText, style)
 	}
 
 	// Legend for zones.

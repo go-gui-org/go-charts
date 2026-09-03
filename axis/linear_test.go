@@ -90,3 +90,21 @@ func TestLinearTickPositions(t *testing.T) {
 		}
 	}
 }
+
+func TestLinearTickTarget(t *testing.T) {
+	// A short plot asks for fewer ticks. The count is approximate —
+	// ticks land on round numbers — so this asserts the direction, not
+	// an exact number.
+	a := NewLinear(LinearCfg{Min: 0, Max: 100})
+	dense := len(a.Ticks(0, 200))
+
+	a = NewLinear(LinearCfg{Min: 0, Max: 100, TickTarget: 3})
+	sparse := len(a.Ticks(0, 200))
+
+	if sparse >= dense {
+		t.Errorf("TickTarget ignored: %d ticks vs %d at the default", sparse, dense)
+	}
+	if sparse < 2 {
+		t.Errorf("an axis must keep its endpoints: %d ticks", sparse)
+	}
+}

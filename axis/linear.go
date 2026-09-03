@@ -1,10 +1,16 @@
 package axis
 
 import (
+	"cmp"
 	"fmt"
 
 	"github.com/go-gui-org/go-charts/scale"
 )
+
+// DefaultTickTarget is how many ticks an axis aims for when the caller
+// does not say. Dense enough to read a value off a tall plot, and the
+// count a short one has to be told to reduce.
+const DefaultTickTarget = 8
 
 // Linear is a linear numeric axis with auto-tick generation.
 type Linear struct {
@@ -13,6 +19,8 @@ type Linear struct {
 	autoRange      bool
 	overrideDomain bool
 	tickFormat     TickFormat
+	tickTarget     int
+	tickCount      int
 }
 
 // LinearCfg configures a linear axis.
@@ -22,6 +30,20 @@ type LinearCfg struct {
 	Max        float64
 	AutoRange  bool
 	TickFormat TickFormat
+
+	// TickTarget is roughly how many ticks to generate. The count is
+	// approximate either way: ticks land on round numbers, so the
+	// spacing that best fits the target decides the actual count.
+	// Zero uses DefaultTickTarget.
+	TickTarget int
+
+	// TickCount, when 2 or more, asks for exactly that many ticks
+	// instead of approximately TickTarget of them. The spacing is still
+	// a round number; the axis top is raised to whatever the count
+	// needs, so the plot may show headroom above the data. Use it where
+	// a changing label count would be more distracting than the
+	// headroom is — a live axis whose range keeps growing.
+	TickCount int
 }
 
 // NewLinear creates a linear axis.
@@ -31,6 +53,8 @@ func NewLinear(cfg LinearCfg) *Linear {
 		sc:         scale.NewLinear(cfg.Min, cfg.Max),
 		autoRange:  cfg.AutoRange,
 		tickFormat: cfg.TickFormat,
+		tickTarget: cmp.Or(cfg.TickTarget, DefaultTickTarget),
+		tickCount:  cfg.TickCount,
 	}
 }
 
@@ -55,7 +79,12 @@ func (a *Linear) Label() string { return a.title }
 // Ticks implements Axis.
 func (a *Linear) Ticks(pixelMin, pixelMax float32) []Tick {
 	dMin, dMax := a.sc.Domain()
-	values := GenerateNiceTicks(dMin, dMax, 8)
+	var values []float64
+	if a.tickCount >= 2 {
+		values = GenerateExactTicks(dMin, dMax, a.tickCount)
+	} else {
+		values = GenerateNiceTicks(dMin, dMax, a.tickTarget)
+	}
 
 	// Expand domain to match nice tick range so gridlines and
 	// data points use the same coordinate space.
