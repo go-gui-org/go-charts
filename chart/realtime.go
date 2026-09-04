@@ -239,6 +239,31 @@ func updateAutoScroll(
 		return
 	}
 
+	// Data that moves backwards means the series was cleared and
+	// refilled, which is a new run rather than a scroll. Auto-scroll
+	// alone never sees this: a rolling window drops points off the
+	// left, so its right edge only ever grows. Without this case the
+	// window stays parked on the old run's right edge, the "no change"
+	// test below swallows every reading of the new one, and the fresh
+	// curve draws off the left of the plot.
+	//
+	// Snap rather than tween, and drop a tween still in flight towards
+	// the old edge: animating backwards across the whole of the last
+	// run would draw a rewind nobody asked for. The removal is queued
+	// so it lands after any add this function has already queued.
+	if dataXMax < ss.TargetXMax || dataXMax < ss.CurrentXMax {
+		ss.TargetXMax = dataXMax
+		ss.CurrentXMax = dataXMax
+		ss.Active = false
+		ss.Version++
+		sm.Set(id, ss)
+		animID := animScrollPrefix + id
+		w.QueueCommand(func(w *gui.Window) {
+			w.AnimationRemove(animID)
+		})
+		return
+	}
+
 	// No change.
 	if dataXMax <= ss.TargetXMax {
 		return

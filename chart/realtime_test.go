@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/go-gui-org/go-charts/series"
+	"github.com/go-gui-org/go-gui/gui"
 )
 
 func TestRealTimeSeriesAppend(t *testing.T) {
@@ -201,5 +202,42 @@ func TestAppendBatchDropsNaN(t *testing.T) {
 	snap := rts.Snapshot()
 	if snap.Points[0].X != 1 || snap.Points[1].X != 4 {
 		t.Errorf("unexpected points: %v", snap.Points)
+	}
+}
+
+// TestUpdateAutoScrollSnapsBackOnAReset covers a chart whose series is
+// cleared and refilled from zero, which is what a second run of a live
+// dashboard does. The window has to follow the data back to the start;
+// leaving it on the old run's right edge draws the new curve off the
+// left of the plot.
+func TestUpdateAutoScrollSnapsBackOnAReset(t *testing.T) {
+	w := &gui.Window{}
+	const id = "live"
+
+	// A run that reaches 18 seconds.
+	updateAutoScroll(w, id, 0, 30)
+	updateAutoScroll(w, id, 18, 30)
+	sm := chartScrollMap(w)
+	ss, _ := sm.Get(id)
+	if ss.TargetXMax != 18 {
+		t.Fatalf("TargetXMax after the first run = %v, want 18", ss.TargetXMax)
+	}
+
+	// The series is cleared: bounds collapse to zero.
+	updateAutoScroll(w, id, 0, 30)
+	ss, _ = sm.Get(id)
+	if ss.TargetXMax != 0 || ss.CurrentXMax != 0 {
+		t.Fatalf("after a reset the window is at %v/%v, want 0/0",
+			ss.CurrentXMax, ss.TargetXMax)
+	}
+	if ss.Active {
+		t.Error("a reset should snap, not animate")
+	}
+
+	// The second run scrolls again from the start.
+	updateAutoScroll(w, id, 0.5, 30)
+	ss, _ = sm.Get(id)
+	if ss.TargetXMax != 0.5 {
+		t.Errorf("TargetXMax in the second run = %v, want 0.5", ss.TargetXMax)
 	}
 }
