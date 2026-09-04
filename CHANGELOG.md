@@ -1,6 +1,31 @@
 # Changelog
 
-## Unreleased
+## v0.7.0 - 2026-09-03
+
+- Hover tooltips are readable. Values round to one decimal, whole numbers to
+  none, and `%g` is kept for magnitudes a fixed-point form would ruin, so a
+  hovered point reads `24.5` rather than `24.533333333333335`.
+  `BaseCfg.TooltipXLabel` and `TooltipYLabel` name the two coordinates, so a
+  chart can say "sec" and "Mbps" instead of "X" and "Y". Tooltip text draws a
+  step below the tick size, overridable with `Theme.TooltipStyle`, and a tooltip
+  taller than the plot area reflows into columns instead of running off the
+  panel.
+- `GaugeCfg.PointerColor` sets the needle color, so the needle can carry a
+  meaning the zone colors do not.
+- **Auto-scroll follows a cleared series back to the start.** Scroll state is
+  keyed by chart ID in the window state map, so it outlives the data it tracked.
+  After a run reaching eighteen seconds, clearing the series and refilling it
+  from zero left the window parked on the old right edge and the new curve drew
+  off the left of the plot. A decreasing data max cannot come from scrolling, so
+  it is now read as a reset: the window snaps to the new max rather than
+  tweening a rewind across the whole previous run, and a scroll animation still
+  in flight towards the old edge is dropped. This is the fix for a live
+  dashboard whose chart did not reset when a second run started.
+- The auto-scroll left edge is clamped to the first data point. It was derived
+  from the right edge, which lags the data while the tween runs, so whenever the
+  window was as wide as the data the whole plot slid sideways on every update.
+  The clamp is inert once the data is wider than the window, which is the case
+  the scroll is for.
 
 - The gauge arc can sweep its color instead of stepping at each zone edge.
   `GaugeCfg.GradientZones` blends the existing `Zones` colors into one
