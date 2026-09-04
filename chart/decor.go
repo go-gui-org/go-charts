@@ -690,6 +690,29 @@ func legendHitTest(lb legendBounds, mx, my float32) int {
 	return -1
 }
 
+// tooltipTextStyle is the text style for tooltip contents: the
+// theme's TooltipStyle when set, otherwise TickStyle one step
+// smaller. Tooltips sit on top of the data they describe and can
+// run to several lines, so they read better a size below the axis
+// labels.
+func tooltipTextStyle(th *theme.Theme) gui.TextStyle {
+	if th.TooltipStyle.Size > 0 {
+		return th.TooltipStyle
+	}
+	s := th.TickStyle
+	// A fixed fraction rather than "minus one point", so the step
+	// stays proportional at any base size. The floor keeps the text
+	// readable if a caller sets a very small tick size.
+	s.Size = max(s.Size*tooltipTextScale, tooltipMinTextSize)
+	return s
+}
+
+// Tooltip text sizing relative to the axis tick labels.
+const (
+	tooltipTextScale   = float32(0.85)
+	tooltipMinTextSize = float32(9)
+)
+
 // drawTooltip draws a tooltip directly on the canvas near (tx, ty),
 // clamped to the plot-area bounds so it does not overlap elements
 // in the padding area (e.g. the title). label may contain
@@ -699,46 +722,77 @@ func drawTooltip(
 	th *theme.Theme, pr plotRect,
 ) {
 	lines := strings.Split(label, "\n")
-	textStyle := th.TickStyle
+	textStyle := tooltipTextStyle(th)
 	textStyle.Color = gui.Hex(0xEEEEEE)
 
 	fh := ctx.FontHeight(textStyle)
 	const padding = float32(6)
 	const lineGap = float32(2)
+	const colGap = float32(12)
 
-	// Measure box dimensions.
-	maxW := float32(0)
-	for _, ln := range lines {
-		w := ctx.TextWidth(ln, textStyle)
-		maxW = max(maxW, w)
+	// Rows per column, so a tooltip taller than the plot area
+	// reflows sideways instead of running off the top or the bottom
+	// where the panel cuts it. Charts are wider than they are tall,
+	// so the spare room is horizontal.
+	availH := pr.Bottom - pr.Top - padding*2
+	rows := len(lines)
+	if fh+lineGap > 0 {
+		fit := int((availH + lineGap) / (fh + lineGap))
+		// One row per column is the floor: fewer would mean a column
+		// per line and a box wider than any plot.
+		rows = min(rows, max(fit, 1))
 	}
-	boxW := maxW + padding*2
-	boxH := float32(len(lines))*fh +
-		float32(len(lines)-1)*lineGap + padding*2
+	cols := (len(lines) + rows - 1) / rows
+
+	// Column widths: each column is as wide as its widest line, so
+	// a short column does not pay for a long one.
+	colW := make([]float32, cols)
+	for i, ln := range lines {
+		c := i / rows
+		colW[c] = max(colW[c], ctx.TextWidth(ln, textStyle))
+	}
+	boxW := padding * 2
+	for c, w := range colW {
+		boxW += w
+		if c > 0 {
+			boxW += colGap
+		}
+	}
+	boxH := float32(rows)*fh + float32(rows-1)*lineGap + padding*2
 
 	// Position above-right of (tx, ty), clamped to plot area.
 	bx := tx + 8
 	by := ty - 8 - boxH
+	// Pull the far edge inside first, then the near edge, so the
+	// near edge wins when the box is still bigger than the plot
+	// area and the loss falls where there is empty ground.
 	if bx+boxW > pr.Right {
 		bx = pr.Right - boxW
 	}
 	if bx < pr.Left {
 		bx = pr.Left
 	}
-	if by < pr.Top {
-		by = pr.Top
-	}
 	if by+boxH > pr.Bottom {
 		by = pr.Bottom - boxH
+	}
+	if by < pr.Top {
+		by = pr.Top
 	}
 
 	ctx.FilledRoundedRect(bx, by, boxW, boxH, 4,
 		gui.RGBA(20, 20, 20, 220))
 
+	// Column origins, left to right.
+	colX := make([]float32, cols)
+	x := bx + padding
+	for c := range colX {
+		colX[c] = x
+		x += colW[c] + colGap
+	}
 	for i, ln := range lines {
-		lx := bx + padding
-		ly := by + padding + float32(i)*(fh+lineGap)
-		ctx.Text(lx, ly, ln, textStyle)
+		c, r := i/rows, i%rows
+		ly := by + padding + float32(r)*(fh+lineGap)
+		ctx.Text(colX[c], ly, ln, textStyle)
 	}
 }
 

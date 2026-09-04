@@ -255,8 +255,9 @@ func (bv *bubbleView) draw(dc *gui.DrawContext) {
 	if bv.hovering && bv.xAxis != nil {
 		drawCrosshair(ctx, th, bv.hoverPx, bv.hoverPy, pr)
 		pa := plotArea{pr, xAxis, yAxis}
+		xName, yName := cfg.tooltipAxisNames()
 		drawXYZTooltip(ctx, th, cfg.Series, pa,
-			bv.hoverPx, bv.hoverPy, cfg.MaxRadius+5)
+			bv.hoverPx, bv.hoverPy, cfg.MaxRadius+5, xName, yName)
 	}
 }
 

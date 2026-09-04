@@ -132,6 +132,13 @@ type GaugeCfg struct {
 	// current value, with a hub circle at the center.
 	ShowPointer bool
 
+	// PointerColor overrides the color of the needle and its hub.
+	// Unset leaves them the color of the arc under the tip, which
+	// makes the needle change color as the reading crosses a zone
+	// boundary. Set it when the needle must stand for something the
+	// arc does not, such as which quantity is on show.
+	PointerColor gui.Color
+
 	// ValueFormat is the fmt format string for the value label.
 	// Default: "%.0f".
 	ValueFormat string
@@ -585,9 +592,15 @@ func (gv *gaugeView) draw(dc *gui.DrawContext) {
 		pts[3] = cy + hw*cosA
 		pts[4] = cx + hw*sinA
 		pts[5] = cy - hw*cosA
-		ctx.FilledPolygon(pts[:], valColor)
+		// An explicit color wins over the arc color, so the needle
+		// can carry its own meaning.
+		needleColor := valColor
+		if cfg.PointerColor.IsSet() {
+			needleColor = cfg.PointerColor
+		}
+		ctx.FilledPolygon(pts[:], needleColor)
 
-		ctx.FilledCircle(cx, cy, hubR, valColor)
+		ctx.FilledCircle(cx, cy, hubR, needleColor)
 	}
 
 	// Min/max labels at arc endpoints.

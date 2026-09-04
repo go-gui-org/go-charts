@@ -521,9 +521,10 @@ func (rv *radarView) tooltipRadar(
 	axis := cfg.Axes[ai]
 	var label string
 	if s.Name != "" {
-		label = fmt.Sprintf("%s\n%s: %g", s.Name, axis.Label, s.Values[ai])
+		label = fmt.Sprintf("%s\n%s: %s",
+			s.Name, axis.Label, tooltipNum(s.Values[ai]))
 	} else {
-		label = fmt.Sprintf("%s: %g", axis.Label, s.Values[ai])
+		label = fmt.Sprintf("%s: %s", axis.Label, tooltipNum(s.Values[ai]))
 	}
 	drawTooltip(ctx, rv.hoverPx, rv.hoverPy, label, th, pr)
 }

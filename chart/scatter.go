@@ -291,10 +291,11 @@ func (sv *scatterView) draw(dc *gui.DrawContext) {
 	if sv.hovering && sv.xAxis != nil {
 		drawCrosshair(ctx, th, sv.hoverPx, sv.hoverPy, pr)
 		pa := plotArea{pr, xAxis, yAxis}
+		xName, yName := cfg.tooltipAxisNames()
 		drawXYTooltip(ctx, th, cfg.Series, pa,
-			sv.hoverPx, sv.hoverPy)
+			sv.hoverPx, sv.hoverPy, xName, yName)
 		drawErrorXYTooltip(ctx, th, cfg.ErrorSeries, pa,
-			sv.hoverPx, sv.hoverPy)
+			sv.hoverPx, sv.hoverPy, xName, yName)
 	}
 }
 

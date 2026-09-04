@@ -2,6 +2,8 @@ package chart
 
 import (
 	"fmt"
+	"math"
+	"strconv"
 
 	"github.com/go-gui-org/go-charts/axis"
 	"github.com/go-gui-org/go-charts/render"
@@ -105,7 +107,7 @@ func nearestStackedPoint(
 func drawStackedXYTooltip(
 	ctx *render.Context, th *theme.Theme,
 	serieses []series.XY, pa plotArea,
-	mx, my float32,
+	mx, my float32, xName, yName string,
 ) {
 	si, pi, px, py, ok := nearestStackedPoint(serieses, pa, mx, my, 20)
 	if !ok {
@@ -115,10 +117,11 @@ func drawStackedXYTooltip(
 	p := s.Points[pi]
 	var label string
 	if s.Name() != "" {
-		label = fmt.Sprintf(
-			"%s\nX: %g\nY: %g", s.Name(), p.X, p.Y)
+		label = fmt.Sprintf("%s\n%s: %s\n%s: %s", s.Name(),
+			xName, tooltipNum(p.X), yName, tooltipNum(p.Y))
 	} else {
-		label = fmt.Sprintf("X: %g\nY: %g", p.X, p.Y)
+		label = fmt.Sprintf("%s: %s\n%s: %s",
+			xName, tooltipNum(p.X), yName, tooltipNum(p.Y))
 	}
 	drawTooltip(ctx, px, py, label, th, pa.plotRect)
 }
@@ -157,7 +160,7 @@ func nearestXYZPoint(
 func drawXYZTooltip(
 	ctx *render.Context, th *theme.Theme,
 	serieses []series.XYZ, pa plotArea,
-	mx, my, snapPx float32,
+	mx, my, snapPx float32, xName, yName string,
 ) {
 	si, pi, px, py, ok := nearestXYZPoint(
 		serieses, pa, mx, my, snapPx)
@@ -168,12 +171,13 @@ func drawXYZTooltip(
 	p := s.Points[pi]
 	var label string
 	if s.Name() != "" {
-		label = fmt.Sprintf(
-			"%s\nX: %g\nY: %g\nSize: %g",
-			s.Name(), p.X, p.Y, p.Z)
+		label = fmt.Sprintf("%s\n%s: %s\n%s: %s\nSize: %s",
+			s.Name(), xName, tooltipNum(p.X),
+			yName, tooltipNum(p.Y), tooltipNum(p.Z))
 	} else {
-		label = fmt.Sprintf(
-			"X: %g\nY: %g\nSize: %g", p.X, p.Y, p.Z)
+		label = fmt.Sprintf("%s: %s\n%s: %s\nSize: %s",
+			xName, tooltipNum(p.X),
+			yName, tooltipNum(p.Y), tooltipNum(p.Z))
 	}
 	drawTooltip(ctx, px, py, label, th, pa.plotRect)
 }
@@ -183,7 +187,7 @@ func drawXYZTooltip(
 func drawXYTooltip(
 	ctx *render.Context, th *theme.Theme,
 	serieses []series.XY, pa plotArea,
-	mx, my float32,
+	mx, my float32, xName, yName string,
 ) {
 	si, pi, px, py, ok := nearestXYPoint(
 		serieses, pa, mx, my, 20)
@@ -194,10 +198,11 @@ func drawXYTooltip(
 	p := s.Points[pi]
 	var label string
 	if s.Name() != "" {
-		label = fmt.Sprintf(
-			"%s\nX: %g\nY: %g", s.Name(), p.X, p.Y)
+		label = fmt.Sprintf("%s\n%s: %s\n%s: %s", s.Name(),
+			xName, tooltipNum(p.X), yName, tooltipNum(p.Y))
 	} else {
-		label = fmt.Sprintf("X: %g\nY: %g", p.X, p.Y)
+		label = fmt.Sprintf("%s: %s\n%s: %s",
+			xName, tooltipNum(p.X), yName, tooltipNum(p.Y))
 	}
 	drawTooltip(ctx, px, py, label, th, pa.plotRect)
 }
@@ -235,7 +240,7 @@ func nearestErrorXYPoint(
 func drawErrorXYTooltip(
 	ctx *render.Context, th *theme.Theme,
 	serieses []series.ErrorXY, pa plotArea,
-	mx, my float32,
+	mx, my float32, xName, yName string,
 ) {
 	si, pi, px, py, ok := nearestErrorXYPoint(
 		serieses, pa, mx, my, 20)
@@ -244,24 +249,52 @@ func drawErrorXYTooltip(
 	}
 	s := serieses[si]
 	p := s.Points[pi]
-	label := formatErrorPointLabel(s.Name(), p)
+	label := formatErrorPointLabel(s.Name(), p, xName, yName)
 	drawTooltip(ctx, px, py, label, th, pa.plotRect)
 }
 
 // formatErrorPointLabel builds a tooltip string for an
 // ErrorPoint, including error bounds when non-zero.
-func formatErrorPointLabel(name string, p series.ErrorPoint) string {
+func formatErrorPointLabel(
+	name string, p series.ErrorPoint, xName, yName string,
+) string {
 	noErr := series.ErrorBar{}
 	var label string
 	if name != "" {
 		label = name + "\n"
 	}
-	label += fmt.Sprintf("X: %g\nY: %g", p.X, p.Y)
+	label += fmt.Sprintf("%s: %s\n%s: %s",
+		xName, tooltipNum(p.X), yName, tooltipNum(p.Y))
 	if p.YErr != noErr {
-		label += fmt.Sprintf("\nY err: +%g/-%g", p.YErr.High, p.YErr.Low)
+		label += fmt.Sprintf("\n%s err: +%s/-%s", yName,
+			tooltipNum(p.YErr.High), tooltipNum(p.YErr.Low))
 	}
 	if p.XErr != noErr {
-		label += fmt.Sprintf("\nX err: +%g/-%g", p.XErr.High, p.XErr.Low)
+		label += fmt.Sprintf("\n%s err: +%s/-%s", xName,
+			tooltipNum(p.XErr.High), tooltipNum(p.XErr.Low))
 	}
 	return label
+}
+
+// tooltipNum formats a data value for a tooltip.
+//
+// Tooltips read as a caption on a hovered point, not as a data dump,
+// so one decimal is enough: %g prints a float's full precision, and a
+// reading like 24.533333333333335 buries the two digits the reader
+// wants. Whole numbers keep no decimal at all, and values too small
+// for one decimal fall back to %g so they do not collapse to "0.0".
+func tooltipNum(v float64) string {
+	switch {
+	case math.IsNaN(v) || math.IsInf(v, 0):
+		return fmt.Sprintf("%g", v)
+	// Outside this band a fixed-point form is worse than %g: below
+	// it one decimal rounds the value away to "0.0", above it the
+	// digits run past the width of any tooltip.
+	case math.Abs(v) >= 1e15 || (v != 0 && math.Abs(v) < 0.05):
+		return fmt.Sprintf("%g", v)
+	case v == math.Trunc(v):
+		return strconv.FormatFloat(v, 'f', -1, 64)
+	default:
+		return strconv.FormatFloat(v, 'f', 1, 64)
+	}
 }

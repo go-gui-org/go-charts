@@ -319,12 +319,13 @@ func (av *areaView) draw(dc *gui.DrawContext) {
 	if av.hovering && av.xAxis != nil {
 		drawCrosshair(ctx, th, av.hoverPx, av.hoverPy, pr)
 		pa := plotArea{pr, xAxis, yAxis}
+		xName, yName := cfg.tooltipAxisNames()
 		if cfg.Stacked {
 			drawStackedXYTooltip(ctx, th, cfg.Series, pa,
-				av.hoverPx, av.hoverPy)
+				av.hoverPx, av.hoverPy, xName, yName)
 		} else {
 			drawXYTooltip(ctx, th, cfg.Series, pa,
-				av.hoverPx, av.hoverPy)
+				av.hoverPx, av.hoverPy, xName, yName)
 		}
 	}
 }

@@ -67,6 +67,12 @@ type Theme struct {
 	LabelStyle gui.TextStyle
 	TickStyle  gui.TextStyle
 
+	// TooltipStyle is the text inside a hover tooltip. Unset falls
+	// back to TickStyle one step smaller: a tooltip can run to six
+	// or more lines, so at tick size it covers the data it is
+	// describing.
+	TooltipStyle gui.TextStyle
+
 	// Axes
 	AxisColor gui.Color
 	AxisWidth float32
