@@ -24,14 +24,14 @@ jobs:
         with:
           repository: go-gui-org/go-gui
           path: go-gui
-          ref: v0.66.1
+          ref: v0.68.0
 
       - name: Checkout go-glyph
         uses: actions/checkout@v6
         with:
           repository: go-gui-org/go-glyph
           path: go-glyph
-          ref: v1.24.0
+          ref: v1.25.0
 
       - name: Update go.mod replace directives
         run: |

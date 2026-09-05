@@ -14,7 +14,7 @@ func detailPanel(w *gui.Window, entries []DemoEntry) gui.View {
 			SizeBorder: gui.NoBorder,
 			Padding:    detailPadding(),
 			ScrollbarCfgY: &gui.ScrollbarCfg{
-				GapEdge: 4,
+				GapEdge: gui.SomeF(4),
 			},
 			Content: []gui.View{
 				gui.Text(gui.TextCfg{
@@ -38,7 +38,7 @@ func detailPanel(w *gui.Window, entries []DemoEntry) gui.View {
 		Padding:    detailPadding(),
 		Spacing:    gui.Some(t.SpacingLarge),
 		ScrollbarCfgY: &gui.ScrollbarCfg{
-			GapEdge: 4,
+			GapEdge: gui.SomeF(4),
 		},
 		Content: []gui.View{
 			viewTitleBar(entry),
