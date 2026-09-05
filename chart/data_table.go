@@ -50,7 +50,6 @@ func dataTableView(
 
 	return gui.Table(gui.TableCfg{
 		ID:           id,
-		Scrollable:   true,
 		Data:         data,
 		ColorBorder:  gui.Gray,
 		SizeBorder:   1,
