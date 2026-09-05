@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.8.0 - 2026-09-05
+
+- Bump go-gui v0.66.1 → v0.68.0 and go-glyph v1.24.0 → v1.25.0. Fixes showcase `ScrollbarCfg.GapEdge` for `Opt[float32]` breaking change.
+
 ## v0.7.0 - 2026-09-03
 
 - Hover tooltips are readable. Values round to one decimal, whole numbers to
