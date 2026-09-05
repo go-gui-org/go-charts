@@ -31,7 +31,7 @@ func catalogPanel(w *gui.Window, entries []DemoEntry) gui.View {
 				Sizing:        gui.FillFill,
 				Padding:       gui.NewPadding(0, t.ScrollbarStyle.Size+4, 0, 0),
 				Spacing:       gui.SomeF(2),
-				ScrollbarCfgY: &gui.ScrollbarCfg{GapEdge: 3},
+				ScrollbarCfgY: &gui.ScrollbarCfg{GapEdge: gui.SomeF(3)},
 				Content:       catalogRows(entries, app),
 			}),
 		},
