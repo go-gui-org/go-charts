@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.9.0 - 2026-09-05
+
+- Bump go-gui v0.68.0 → v0.69.0 (go-glyph stays v1.25.0). Follows the
+  `TableCfg.Scrollable` removal: tables always scroll now, so the data-table
+  helper drops the flag. Workflow `ref:` pins move to v0.69.0 so CI exercises
+  the new version.
+
 ## v0.8.0 - 2026-09-05
 
 - Bump go-gui v0.66.1 → v0.68.0 and go-glyph v1.24.0 → v1.25.0. Fixes showcase `ScrollbarCfg.GapEdge` for `Opt[float32]` breaking change.
