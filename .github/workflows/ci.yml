@@ -6,12 +6,28 @@ on:
   pull_request:
     branches: [main]
 
+# Read-only. Nothing here publishes, comments or tags, so the job token
+# needs no more than the checkout.
+permissions:
+  contents: read
+
 jobs:
   build:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+
+    # go-charts contains no cgo: no file in the module declares `import
+    # "C"` or a #cgo directive. It draws through go-gui and lays out text
+    # through go-glyph, and both are pure Go on Linux and Windows --
+    # go-gui reaches GL via purego and go-glyph shapes with
+    # go-text/typesetting. Setting this explicitly keeps the two runners
+    # honest: Windows has no C compiler here, and a silent fallback would
+    # hide the day a dependency starts wanting one.
+    env:
+      CGO_ENABLED: "0"
+
     steps:
       - uses: actions/checkout@v6
 
@@ -38,35 +54,10 @@ jobs:
           go mod edit -replace github.com/go-gui-org/go-gui=./go-gui
           go mod edit -replace github.com/go-gui-org/go-glyph=./go-glyph
 
-      - name: Install dependencies (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y libsdl2-dev libfreetype6-dev libharfbuzz-dev libpango1.0-dev libfontconfig1-dev libhunspell-dev
-
-      - name: Install MSYS2 and dependencies (Windows)
-        if: runner.os == 'Windows'
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: UCRT64
-          update: true
-          install: >-
-            mingw-w64-ucrt-x86_64-gcc
-            mingw-w64-ucrt-x86_64-pkg-config
-            mingw-w64-ucrt-x86_64-SDL2
-            mingw-w64-ucrt-x86_64-freetype
-            mingw-w64-ucrt-x86_64-harfbuzz
-            mingw-w64-ucrt-x86_64-pango
-            mingw-w64-ucrt-x86_64-fontconfig
-            mingw-w64-ucrt-x86_64-hunspell
-
-      - name: Set CGo environment (Windows)
-        if: runner.os == 'Windows'
-        shell: msys2 {0}
-        run: |
-          echo "CGO_ENABLED=1" >> "$GITHUB_ENV"
-          echo "CC=$(cygpath -m $(which gcc))" >> "$GITHUB_ENV"
-          echo "PKG_CONFIG_PATH=$(cygpath -m /ucrt64/lib/pkgconfig)" >> "$GITHUB_ENV"
-          cygpath -m /ucrt64/bin >> "$GITHUB_PATH"
-
+      # No apt or msys2 step. The SDL2, FreeType, HarfBuzz, Pango,
+      # fontconfig and hunspell packages installed here until now were
+      # left over from go-glyph's cgo era; nothing in this repo, or in
+      # the versions pinned above, links any of them.
       - run: go build ./...
       - run: go vet ./...
       - run: go test ./...
