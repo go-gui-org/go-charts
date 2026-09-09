@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.10.0 - 2026-09-09
+
+- Bump go-gui v0.69.0 → v0.72.0 and go-glyph v1.25.0 → v1.25.1. Workflow
+  `ref:` pins move to v0.72.0 / v1.25.1 so CI exercises the new versions.
+  CI drops the cgo toolchain and native deps (`CGO_ENABLED=0`).
+
 ## v0.9.0 - 2026-09-05
 
 - Bump go-gui v0.68.0 → v0.69.0 (go-glyph stays v1.25.0). Follows the
