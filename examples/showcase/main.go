@@ -21,7 +21,7 @@ func runShowcase() {
 		Width:  800,
 		Height: 768,
 		OnInit: func(w *gui.Window) {
-			w.UpdateView(mainView)
+			w.SetView(mainView)
 		},
 	})
 
