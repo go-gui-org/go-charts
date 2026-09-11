@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.12.0 - 2026-09-11
+
+- Bump go-gui v0.73.0 → v0.74.0 and migrate off the deprecated forwarders
+  (`UpdateWindow` → `InvalidateLayout`, `UpdateView` → `SetView`). Workflow
+  `ref:` pins move to v0.74.0 so CI exercises the new version.
+
 ## v0.11.0 - 2026-09-10
 
 - Bump go-gui v0.72.0 → v0.73.0. Workflow `ref:` pins move to v0.73.0 so CI
