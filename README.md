@@ -45,7 +45,7 @@ func main() {
         Title:  "Line Chart",
         Width:  800,
         Height: 600,
-        OnInit: func(w *gui.Window) { w.UpdateView(view) },
+        OnInit: func(w *gui.Window) { w.SetView(view) },
     })
     backend.Run(w)
 }
