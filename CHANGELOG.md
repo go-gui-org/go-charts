@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.13.0 - 2026-09-12
+
+- Bump go-gui v0.74.0 → v0.75.0. Workflow `ref:` pins move to v0.75.0 so CI
+  exercises the new version.
+
 ## v0.12.0 - 2026-09-11
 
 - Bump go-gui v0.73.0 → v0.74.0 and migrate off the deprecated forwarders
