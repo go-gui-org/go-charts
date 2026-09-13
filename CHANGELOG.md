@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.14.0 - 2026-09-13
+
+- Bump go-gui v0.75.0 → v0.76.0. Workflow `ref:` pins move to v0.76.0 so CI
+  exercises the new version.
+
 ## v0.13.0 - 2026-09-12
 
 - Bump go-gui v0.74.0 → v0.75.0. Workflow `ref:` pins move to v0.75.0 so CI
