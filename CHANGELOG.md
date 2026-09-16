@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.15.0 - 2026-09-16
+
+- Bump go-gui v0.76.0 → v0.77.0 and go-glyph v1.25.1 → v1.25.2. Workflow `ref:`
+  pins move to v0.77.0 / v1.25.2 so CI exercises the new versions.
+
 ## v0.14.0 - 2026-09-13
 
 - Bump go-gui v0.75.0 → v0.76.0. Workflow `ref:` pins move to v0.76.0 so CI
@@ -23,9 +28,9 @@
 
 ## v0.10.0 - 2026-09-09
 
-- Bump go-gui v0.69.0 → v0.72.0 and go-glyph v1.25.0 → v1.25.1. Workflow
-  `ref:` pins move to v0.72.0 / v1.25.1 so CI exercises the new versions.
-  CI drops the cgo toolchain and native deps (`CGO_ENABLED=0`).
+- Bump go-gui v0.69.0 → v0.72.0 and go-glyph v1.25.0 → v1.25.1. Workflow `ref:`
+  pins move to v0.72.0 / v1.25.1 so CI exercises the new versions. CI drops the
+  cgo toolchain and native deps (`CGO_ENABLED=0`).
 
 ## v0.9.0 - 2026-09-05
 
@@ -36,7 +41,8 @@
 
 ## v0.8.0 - 2026-09-05
 
-- Bump go-gui v0.66.1 → v0.68.0 and go-glyph v1.24.0 → v1.25.0. Fixes showcase `ScrollbarCfg.GapEdge` for `Opt[float32]` breaking change.
+- Bump go-gui v0.66.1 → v0.68.0 and go-glyph v1.24.0 → v1.25.0. Fixes showcase
+  `ScrollbarCfg.GapEdge` for `Opt[float32]` breaking change.
 
 ## v0.7.0 - 2026-09-03
 
