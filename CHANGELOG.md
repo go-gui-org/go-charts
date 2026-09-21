@@ -1,12 +1,14 @@
 # Changelog
 
-## Unreleased
+## [Unreleased]
+
+## [v0.16.0] - 2026-09-21
 
 - Migrate to go-gui semantic text roles (numbered rungs removed) and bump
   go-gui v0.77.0 → v0.78.0. Workflow `ref:` pins move to v0.78.0 so CI
   exercises the new version.
 
-## v0.15.0 - 2026-09-16
+## [v0.15.0] - 2026-09-16
 
 - Bump go-gui v0.76.0 → v0.77.0 and go-glyph v1.25.1 → v1.25.2. Workflow `ref:`
   pins move to v0.77.0 / v1.25.2 so CI exercises the new versions.
