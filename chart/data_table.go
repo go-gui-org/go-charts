@@ -51,7 +51,7 @@ func dataTableView(
 	return gui.Table(gui.TableCfg{
 		ID:           id,
 		Data:         data,
-		ColorBorder:  gui.Gray,
+		Colors:       gui.ColorSet{Border: gui.Gray},
 		SizeBorder:   1,
 		BorderStyle:  gui.TableBorderAll,
 		FreezeHeader: true,

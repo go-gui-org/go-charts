@@ -19,7 +19,7 @@ func catalogPanel(w *gui.Window, entries []DemoEntry) gui.View {
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      "Chart Catalog",
-				TextStyle: t.B3,
+				TextStyle: t.TextStyleTitleSmall,
 			}),
 			searchInput(app),
 			groupPicker(app),
@@ -84,7 +84,7 @@ func groupPickerItem(label, key string, app *ShowcaseApp) gui.View {
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      label,
-				TextStyle: t.N5,
+				TextStyle: t.TextStyleCaption,
 			}),
 		},
 		OnClick: func(ctx gui.EventCtx) {
@@ -130,7 +130,7 @@ func themePicker(app *ShowcaseApp) gui.View {
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      "Theme: " + themeLabel(app.SelectedTheme),
-				TextStyle: t.N5,
+				TextStyle: t.TextStyleCaption,
 			}),
 		},
 		OnClick: func(ctx gui.EventCtx) {
@@ -174,7 +174,7 @@ func catalogRows(entries []DemoEntry, app *ShowcaseApp) []gui.View {
 		return []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      "No matching charts",
-				TextStyle: t.N4,
+				TextStyle: t.TextStyleBodySmall,
 			}),
 		}
 	}
@@ -200,7 +200,7 @@ func catalogRows(entries []DemoEntry, app *ShowcaseApp) []gui.View {
 				}
 				rows = append(rows, gui.Text(gui.TextCfg{
 					Text:      group.Label,
-					TextStyle: t.B5,
+					TextStyle: t.TextStyleCaption.Bold(),
 				}))
 			}
 			rows = append(rows, catalogRow(entry, app, t))
@@ -225,7 +225,7 @@ func catalogRow(entry DemoEntry, app *ShowcaseApp, t gui.Theme) gui.View {
 		// transparent in both states — the row is delimited by its fill.
 		Colors: gui.ColorSet{
 			Base:        color,
-			Hover:       t.MenubarStyle.ColorSelect,
+			Hover:       t.ColorSelect,
 			Click:       t.ColorActive,
 			Focus:       color,
 			Border:      gui.ColorTransparent,
@@ -237,7 +237,7 @@ func catalogRow(entry DemoEntry, app *ShowcaseApp, t gui.Theme) gui.View {
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      entry.Label,
-				TextStyle: t.N4,
+				TextStyle: t.TextStyleBodySmall,
 			}),
 		},
 		OnClick: func(ctx gui.EventCtx) {

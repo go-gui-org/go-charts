@@ -122,7 +122,7 @@ func Default() *Theme {
 	t := gui.CurrentTheme()
 	return &Theme{
 		Background:    t.ColorBackground,
-		TitleStyle:    t.B1,
+		TitleStyle:    t.TextStyleDisplay,
 		LabelStyle:    t.TextStyleDef,
 		TickStyle:     t.TextStyleDef,
 		AxisColor:     t.ColorBorder,
@@ -145,14 +145,14 @@ func HighContrastTheme() *Theme {
 	labelTick := gui.TextStyle{
 		Size:     t.TextStyleDef.Size + 1,
 		Color:    t.TextStyleDef.Color,
-		Typeface: t.B1.Typeface,
+		Typeface: t.TextStyleDisplay.Typeface,
 	}
 	return &Theme{
 		Background: t.ColorBackground,
 		TitleStyle: gui.TextStyle{
-			Size:     t.B1.Size + 2,
-			Color:    t.B1.Color,
-			Typeface: t.B1.Typeface,
+			Size:     t.TextStyleDisplay.Size + 2,
+			Color:    t.TextStyleDisplay.Color,
+			Typeface: t.TextStyleDisplay.Typeface,
 		},
 		LabelStyle: labelTick,
 		TickStyle:  labelTick,
