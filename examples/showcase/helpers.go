@@ -164,7 +164,7 @@ func demoPage(w *gui.Window, id string, views []gui.View, code string) gui.View 
 		if desc, found := chartTypeDescriptions[prefix]; found {
 			views = append(views, gui.Text(gui.TextCfg{
 				Text:      desc,
-				TextStyle: t.N4,
+				TextStyle: t.TextStyleBodySmall,
 				Mode:      gui.TextModeWrap,
 			}))
 		}
@@ -174,7 +174,7 @@ func demoPage(w *gui.Window, id string, views []gui.View, code string) gui.View 
 		line(),
 		gui.Text(gui.TextCfg{
 			Text:      "Code",
-			TextStyle: t.B3,
+			TextStyle: t.TextStyleTitleSmall,
 		}),
 		w.Markdown(gui.MarkdownCfg{
 			ID:      "code-" + id,
@@ -208,7 +208,7 @@ func exportButtons(id string, chartView gui.View) gui.View {
 				Padding: btnPad,
 				Content: []gui.View{gui.Text(gui.TextCfg{
 					Text:      "Show SVG",
-					TextStyle: t.N4,
+					TextStyle: t.TextStyleBodySmall,
 				})},
 				OnClick: func(ctx gui.EventCtx) {
 					path := filepath.Join(tempDir(), id+".svg")
@@ -223,7 +223,7 @@ func exportButtons(id string, chartView gui.View) gui.View {
 				Padding: btnPad,
 				Content: []gui.View{gui.Text(gui.TextCfg{
 					Text:      "Show PNG",
-					TextStyle: t.N4,
+					TextStyle: t.TextStyleBodySmall,
 				})},
 				OnClick: func(ctx gui.EventCtx) {
 					path := filepath.Join(tempDir(), id+".png")

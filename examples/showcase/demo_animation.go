@@ -105,7 +105,7 @@ func demoAnimEntry(w *gui.Window) gui.View {
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      "Replay",
-				TextStyle: gui.CurrentTheme().N4,
+				TextStyle: gui.CurrentTheme().TextStyleBodySmall,
 			}),
 		},
 		OnClick: func(ctx gui.EventCtx) {
@@ -157,7 +157,7 @@ func demoAnimTransition(w *gui.Window) gui.View {
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      "Swap Data",
-				TextStyle: gui.CurrentTheme().N4,
+				TextStyle: gui.CurrentTheme().TextStyleBodySmall,
 			}),
 		},
 		OnClick: func(ctx gui.EventCtx) {

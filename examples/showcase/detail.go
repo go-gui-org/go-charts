@@ -19,7 +19,7 @@ func detailPanel(w *gui.Window, entries []DemoEntry) gui.View {
 			Content: []gui.View{
 				gui.Text(gui.TextCfg{
 					Text:      "No chart matches filter",
-					TextStyle: t.B2,
+					TextStyle: t.TextStyleTitle,
 				}),
 			},
 		})
@@ -44,7 +44,7 @@ func detailPanel(w *gui.Window, entries []DemoEntry) gui.View {
 			viewTitleBar(entry),
 			gui.Text(gui.TextCfg{
 				Text:      entry.Summary,
-				TextStyle: t.N3,
+				TextStyle: t.TextStyleBody,
 				Mode:      gui.TextModeWrap,
 			}),
 			content,
@@ -67,7 +67,7 @@ func viewTitleBar(entry DemoEntry) gui.View {
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      entry.Label,
-				TextStyle: gui.CurrentTheme().B1,
+				TextStyle: gui.CurrentTheme().TextStyleDisplay,
 			}),
 			line(),
 		},
@@ -170,7 +170,7 @@ func demoPlaceholder(text string) gui.View {
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      text,
-				TextStyle: t.N3,
+				TextStyle: t.TextStyleBody,
 				Mode:      gui.TextModeWrap,
 			}),
 		},
