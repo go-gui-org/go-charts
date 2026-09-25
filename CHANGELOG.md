@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [v0.18.0] - 2026-09-25
+
+- Bump go-gui v0.79.0 → v0.80.0. Workflow `ref:` pins move to v0.80.0 so CI
+  exercises the new version.
+
 ## [v0.17.0] - 2026-09-23
 
 - Bump go-gui v0.78.0 → v0.79.0 and go-glyph v1.25.2 → v1.26.0. Workflow `ref:`
