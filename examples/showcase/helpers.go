@@ -187,7 +187,7 @@ func demoPage(w *gui.Window, id string, views []gui.View, code string) gui.View 
 	return gui.Column(gui.ContainerCfg{
 		Sizing:  gui.FillFit,
 		Padding: gui.NoPadding,
-		Spacing: gui.SomeF(12),
+		Spacing: gui.SpacingMedium,
 		Content: views,
 	})
 }
@@ -200,7 +200,7 @@ func exportButtons(id string, chartView gui.View) gui.View {
 		Sizing:     gui.FillFit,
 		Padding:    gui.NoPadding,
 		SizeBorder: gui.NoBorder,
-		Spacing:    gui.SomeF(8),
+		Spacing:    gui.SpacingSmall,
 		Content: []gui.View{
 			gui.Button(gui.ButtonCfg{
 				ID:      "export-svg-" + id,

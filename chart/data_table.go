@@ -533,7 +533,7 @@ func dataTableSankey(
 		Sizing:  cfg.Sizing,
 		Width:   cfg.Width,
 		Height:  cfg.Height,
-		Spacing: gui.SomeF(8),
+		Spacing: gui.SpacingSmall,
 		Content: []gui.View{
 			dataTableView(&nodesCfg, nh, nRows),
 			dataTableView(&linksCfg, lh, lRows),

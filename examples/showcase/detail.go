@@ -36,7 +36,7 @@ func detailPanel(w *gui.Window, entries []DemoEntry) gui.View {
 		Color:      t.ColorBackground,
 		SizeBorder: gui.NoBorder,
 		Padding:    detailPadding(),
-		Spacing:    gui.Some(t.SpacingLarge),
+		Spacing:    gui.SpacingLarge,
 		ScrollbarCfgY: &gui.ScrollbarCfg{
 			GapEdge: gui.SomeF(4),
 		},
@@ -166,7 +166,7 @@ func demoPlaceholder(text string) gui.View {
 		Sizing:  gui.FillFit,
 		Color:   t.ColorPanel,
 		Padding: gui.NewPadding(24, 24, 24, 24),
-		Radius:  gui.SomeF(8),
+		Radius:  gui.RadiusMedium,
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      text,
