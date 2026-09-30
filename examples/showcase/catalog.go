@@ -15,7 +15,7 @@ func catalogPanel(w *gui.Window, entries []DemoEntry) gui.View {
 		Sizing:  gui.FixedFill,
 		Color:   t.ColorPanel,
 		Padding: gui.NewPadding(12, 12, 12, 12),
-		Spacing: gui.SomeF(8),
+		Spacing: gui.SpacingSmall,
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
 				Text:      "Chart Catalog",
@@ -30,7 +30,7 @@ func catalogPanel(w *gui.Window, entries []DemoEntry) gui.View {
 				Scrollable:    true,
 				Sizing:        gui.FillFill,
 				Padding:       gui.NewPadding(0, t.ScrollbarStyle.Size+4, 0, 0),
-				Spacing:       gui.SomeF(2),
+				Spacing:       gui.SpacingTight,
 				ScrollbarCfgY: &gui.ScrollbarCfg{GapEdge: gui.SomeF(3)},
 				Content:       catalogRows(entries, app),
 			}),
@@ -58,7 +58,7 @@ func groupPicker(app *ShowcaseApp) gui.View {
 	return gui.Wrap(gui.ContainerCfg{
 		Sizing:  gui.FillFit,
 		Padding: gui.NoPadding,
-		Spacing: gui.SomeF(3),
+		Spacing: gui.SpacingTight,
 		Content: items,
 	})
 }
@@ -79,7 +79,7 @@ func groupPickerItem(label, key string, app *ShowcaseApp) gui.View {
 		// interactive states and stop the button reacting. Color keeps
 		// its old meaning — resting fill, states left to the theme.
 		Colors:  gui.ColorSet{Border: color},
-		Radius:  gui.SomeF(3),
+		Radius:  gui.RadiusSmall,
 		Padding: gui.NewPadding(3, 6, 3, 6),
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
@@ -125,7 +125,7 @@ func themePicker(app *ShowcaseApp) gui.View {
 		// hover and click still come from the theme. See groupPickerItem
 		// for why this is not Flat().
 		Colors:  gui.ColorSet{Border: t.ColorBackground},
-		Radius:  gui.SomeF(3),
+		Radius:  gui.RadiusSmall,
 		Padding: gui.NewPadding(3, 6, 3, 6),
 		Content: []gui.View{
 			gui.Text(gui.TextCfg{
@@ -231,7 +231,7 @@ func catalogRow(entry DemoEntry, app *ShowcaseApp, t gui.Theme) gui.View {
 			Border:      gui.ColorTransparent,
 			BorderFocus: gui.ColorTransparent,
 		},
-		Radius:  gui.SomeF(4),
+		Radius:  gui.RadiusSmall,
 		Padding: gui.NewPadding(3, 6, 3, 6),
 		HAlign:  gui.Some(gui.HAlignLeft),
 		Content: []gui.View{
