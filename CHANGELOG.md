@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [v0.20.0] - 2026-09-29
+
 - Bump go-gui v0.81.0 → v0.82.0. Workflow `ref:` pins move to v0.82.0 so CI
   exercises the new version. Spacing and radius values move from `gui.SomeF(n)`
   to theme roles, which follow the theme. Values off the step ladder snap to
