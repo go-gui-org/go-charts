@@ -36,3 +36,6 @@ docs/gallery/
 
 .claude/
 go.work
+
+# Pinned linter binary, built by `make lint` from tools/lint.
+/.bin/

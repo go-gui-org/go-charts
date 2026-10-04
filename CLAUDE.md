@@ -8,7 +8,7 @@ Guidance for Claude Code when working in this repository.
 go test ./...                        # run all tests
 go test ./chart/... -run TestFoo     # run single test
 go vet ./...                         # static analysis
-golangci-lint run ./...              # full lint
+make lint                            # full lint (pinned version)
 go build ./...                       # build all packages
 ```
 

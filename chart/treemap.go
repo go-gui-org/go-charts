@@ -252,7 +252,7 @@ func (tv *treemapView) squarify(
 		rowEnd := 1
 
 		for rowEnd < len(remaining) {
-			candidate := append(rowAreas[:len(rowAreas):len(rowAreas)],
+			candidate := append(slices.Clip(rowAreas),
 				remaining[rowEnd].area)
 			candidateTotal := rowTotal + remaining[rowEnd].area
 			oldWorst := worstAspectRatio(rowAreas, rowTotal, shortSide)
