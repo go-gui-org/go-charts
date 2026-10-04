@@ -3,7 +3,8 @@
 ## Prerequisites
 
 - Go 1.26+
-- [golangci-lint](https://golangci-lint.run/)
+- [golangci-lint](https://golangci-lint.run/) does not need to be installed.
+  `make lint` builds the version pinned in `tools/lint/go.mod` into `.bin/`.
 - go-gui (sibling directory at `../go-gui`)
 
 ## Build and Test
@@ -23,12 +24,11 @@ make build       # build all packages
 make test        # run all tests
 make test-race   # tests with the race detector
 make vet         # static analysis
-make lint        # full lint, at the version CI pins
+make lint        # full lint, at the pinned version
 ```
 
-`make lint` first checks that golangci-lint is installed at the version CI pins
-(`LINT_VERSION` in the Makefile, kept equal to the `version:` in
-`.github/workflows/ci.yml`), so a local pass and a CI pass mean the same thing.
+`make lint` builds golangci-lint at the version pinned in `tools/lint/go.mod`.
+CI runs `make lint` too, so a local pass and a CI pass mean the same thing.
 
 Gate targets run with `GOWORK=off`. A local `go.work` here points at
 `../go-gui`, which CI never sees: CI checks out go-gui and go-glyph at the
