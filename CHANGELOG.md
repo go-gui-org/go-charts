@@ -6,8 +6,8 @@
 
 ### Changed
 
-- **go-gui v0.86.0 and go-glyph v1.26.2 (#92).** Picks up lower draw and
-  layout allocations upstream. CI workflows pin the new versions.
+- **go-gui v0.86.0 and go-glyph v1.26.2 (#92).** Picks up lower draw and layout
+  allocations upstream. CI workflows pin the new versions.
 - **golangci-lint is pinned in a `tools/lint` module (#91).**
 
 ## [v0.22.0] - 2026-10-01
