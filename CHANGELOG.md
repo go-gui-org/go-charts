@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [v0.24.0] - 2026-10-11
+
+### Changed
+
+- **go-gui v0.87.0 and go-glyph v1.26.3 (#94).** Picks up ContainerCfg.Hover,
+  Windows screen-reader support and allocation cuts upstream. CI workflows pin
+  the new versions.
+
 ## [v0.23.0] - 2026-10-06
 
 ### Changed
