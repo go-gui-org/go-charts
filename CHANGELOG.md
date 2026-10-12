@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [v0.25.0] - 2026-10-12
+
+### Changed
+
+- **go-gui v0.88.3 and go-glyph v1.26.4 (#96).** Picks up the upstream
+  color-emoji width, size and baseline fix. CI workflows pin the new versions.
+
 ## [v0.24.0] - 2026-10-11
 
 ### Changed
