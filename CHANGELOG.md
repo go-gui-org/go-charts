@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [v0.26.0] - 2026-10-15
+
+### Changed
+
+- **go-gui v0.89.0 (#98).** Picks up view transforms, `gui.FlipPanel`,
+  `gui.HoverLift` and display-rate animation ticks. CI workflows pin the new
+  version.
+
 ## [v0.25.0] - 2026-10-12
 
 ### Changed
@@ -39,8 +47,8 @@
 
 - Bump go-gui v0.81.0 → v0.82.0. Workflow `ref:` pins move to v0.82.0 so CI
   exercises the new version. Spacing and radius values move from `gui.SomeF(n)`
-  to theme roles, which follow the theme. Values off the step ladder snap to
-  the nearest step: the 8 px gap between the data-table sections is now
+  to theme roles, which follow the theme. Values off the step ladder snap to the
+  nearest step: the 8 px gap between the data-table sections is now
   `gui.SpacingSmall` (6 px). The examples snap the same way.
 
 ## [v0.19.0] - 2026-09-28
@@ -60,9 +68,9 @@
 
 ## [v0.16.0] - 2026-09-21
 
-- Migrate to go-gui semantic text roles (numbered rungs removed) and bump
-  go-gui v0.77.0 → v0.78.0. Workflow `ref:` pins move to v0.78.0 so CI
-  exercises the new version.
+- Migrate to go-gui semantic text roles (numbered rungs removed) and bump go-gui
+  v0.77.0 → v0.78.0. Workflow `ref:` pins move to v0.78.0 so CI exercises the
+  new version.
 
 ## [v0.15.0] - 2026-09-16
 
