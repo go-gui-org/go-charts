@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [v0.27.0] - 2026-10-19
+
+### Changed
+
+- **go-gui v0.91.0 (#100, #101).** Picks up go-gui v0.90.0 and v0.91.0: native
+  Wayland on a Linux Wayland desktop, touch fling scrolling and Markdown images
+  off unless the app allows them. CI workflows pin the new version.
+
 ## [v0.26.0] - 2026-10-15
 
 ### Changed
