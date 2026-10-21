@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [v0.28.0] - 2026-10-21
+
+### Changed
+
+- **go-gui v0.92.0 (#103).** Picks up content transitions on `Text`,
+  single-instance mode with open events, and upstream touch, Wayland and web
+  fixes. CI workflows pin the new version.
+
 ## [v0.27.0] - 2026-10-19
 
 ### Changed
