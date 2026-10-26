@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [v0.29.0] - 2026-10-25
+
+### Changed
+
+- **go-gui v0.93.0 (#105).** Picks up `Window.HTML`, table row headers, the
+  input context menu and upstream touch and Android fixes. CI workflows pin the
+  new version.
+
 ## [v0.28.0] - 2026-10-21
 
 ### Changed
