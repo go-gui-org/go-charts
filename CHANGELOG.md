@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [v0.30.0] - 2026-10-31
+
+### Changed
+
+- **go-gui v0.94.0 (#107).** Picks up `TitlebarDark` on GNOME under Wayland,
+  `PixelSurface` and shader textures, layout-correct Linux keys and shortcuts,
+  and upstream `Input` and `Select` fixes. CI workflows pin the new version.
+
 ## [v0.29.0] - 2026-10-25
 
 ### Changed
