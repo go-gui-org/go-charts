@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [v0.31.0] - 2026-11-13
+
+### Changed
+
+- **go-gui v0.95.0 to v0.96.0 and go-glyph v1.26.5 (#109, #110).** Picks up CR/CRLF hard line
+  breaks and the paragraph-scan fix, with transitive `x/` bumps. CI workflows
+  pin the new versions.
+
 ## [v0.30.0] - 2026-10-31
 
 ### Changed
