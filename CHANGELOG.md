@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [v0.32.0] - 2026-11-17
+
+### Changed
+
+- **go-gui v0.96.0 to v0.97.0 (#112).** Picks up `DrawCanvasCfg.OnAnyClick`, `ButtonCfg.Loading`, `Window.KeepAwake` and the Linux software renderer. CI workflows pin the new version.
+
 ## [v0.31.0] - 2026-11-13
 
 ### Changed
