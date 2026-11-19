@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [v0.33.0] - 2026-11-19
+
+### Changed
+
+- **go-gui v0.97.0 to v0.98.0 and go-glyph v1.26.5 to v1.28.0.** Picks up
+  soft-keyboard avoidance (BREAKING: the layout sits above the soft keyboard,
+  so drop any `SoftKeyboardInset` padding), markdown spacing fixes, and glyph
+  hinting plus gamma-corrected coverage. CI workflows pin the new versions.
+
 ## [v0.32.0] - 2026-11-17
 
 ### Changed
