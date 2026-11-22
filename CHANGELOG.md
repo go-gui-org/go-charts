@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **go-glyph v1.28.0 to v1.29.0 (go-gui-org/go-gui#1334).** Text in PNG exports
+  is no longer stem-hinted. PNG export draws text through go-glyph directly, so
+  it takes go-glyph's default, which is now off. The snap made straight and
+  curved letters in one word look out of step. PNG exports now match the screen,
+  where go-gui also turns hinting off. SVG export does not change: it writes
+  text elements, and the viewer draws them. CI workflows pin the new version.
+
 ## [v0.33.0] - 2026-11-19
 
 ### Changed
