@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [v0.34.0] - 2026-11-22
+
+### Changed
+
+- **go-gui v0.98.0 to v0.99.1 and go-glyph v1.29.0 to v1.29.2.** Picks up the
+  go-gui v0.99.x line; no API change on the chart surface. CI workflows pin the
+  new versions.
+
 ### Changed
 
 - **go-glyph v1.28.0 to v1.29.0 (go-gui-org/go-gui#1334).** Text in PNG exports
