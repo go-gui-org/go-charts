@@ -35,7 +35,7 @@ jobs:
         with:
           repository: go-gui-org/go-glyph
           path: go-glyph
-          ref: v1.29.0
+          ref: v1.29.2
 
       - name: Update go.mod replace directives
         run: |
